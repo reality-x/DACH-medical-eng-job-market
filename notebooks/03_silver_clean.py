@@ -159,6 +159,56 @@ R_AI_ENGINEER = (r"\bai\s*[\-/]?\s*(engineer|developer|entwickler|"
                  r"artificial intelligence engineer|"
                  r"\bai software engineer\b")
 
+# --- Software engineering -----------------------------------------
+# Checked after the data and named AI families, so "Data Platform
+# Engineer" stays data and "AI Software Engineer" stays AI, but before
+# the vague AI bucket, so "Fullstack Developer (AI Startup)" is counted
+# as the fullstack role it names.
+
+# Not in scope: embedded/firmware and QA/test. Caught here so they
+# don't fall into the generic software family; they land in
+# silver.excluded like every other out-of-scope row.
+R_SWE_OUT = (r"\bembedded\b|firmware|\bsps\b|\bplc\b|"
+             r"\b(qa|test|testing)[\s\-]?(engineer|automation)|"
+             r"quality assurance|testautomat|software[\s\-]?test|"
+             r"softwaretest")
+
+R_FULLSTACK = r"full[\s\-]?stack"
+
+R_MOBILE = (r"\b(ios|android|mobile|flutter|react native|swift|kotlin)"
+            r"\b[\s\-/]*(app[\s\-]?)?(software[\s\-]?)?"
+            r"(engineer|developer|entwickler|programmierer)|"
+            r"\bapp[\s\-]?entwickl|\bmobile app")
+
+R_FRONTEND = (r"front[\s\-]?end|"
+              r"\b(react|angular|vue(\.?js)?|javascript|typescript|ui)"
+              r"\b[\s\-/]*(engineer|developer|entwickler)|"
+              r"\bweb[\s\-]?(developer|entwickler)|webentwickl")
+
+R_BACKEND = (r"back[\s\-]?end|"
+             r"(\bjava|\bgolang|\bgo(?=\s)|\bpython|\bphp|\bruby|\bscala|"
+             r"\bkotlin|\brust|\bnode\.?js|\.net|\bc#)"
+             r"\s*[\-/]?\s*(software[\s\-]?)?"
+             r"(engineer|developer|entwickler|programmierer)|"
+             # "Anwendungsentwickler Java": German puts the stack last
+             r"(engineer|developer|entwickler|programmierer)\s*[\-/(]?\s*"
+             r"(java|golang|python|php|ruby|scala|rust|node\.?js|"
+             r"\.net|c#)(\b|$)")
+
+R_DEVOPS = (r"devops|dev[\s\-]ops|devsecops|\bsre\b|site reliability|"
+            r"\bplatt?form[\s\-]?engineer|"
+            r"cloud[\s\-]?(solutions?[\s\-]?)?(engineer|architect|architekt|developer|"
+            r"entwickler|administrator|ingenieur|consultant|"
+            r"infrastructure)|"
+            r"kubernetes|infrastructure engineer|"
+            r"infrastructure as code")
+
+R_SWE = (r"software[\s\-]?(engineer|developer|entwickler|ingenieur|"
+         r"architekt|architect|craftsman)|"
+         r"softwareentwickl|softwareingenieur|softwarearchitekt|"
+         r"\bprogrammierer|anwendungsentwickl|applikationsentwickl|"
+         r"\bsoftware dev")
+
 # Last resort. Mentions AI, tells you nothing else. Published as its
 # own family so the reader can see how large it is.
 R_AI_OTHER = (r"\bai\b|\bki\b|artificial intelligence|"
@@ -190,6 +240,10 @@ _ORDER = [
     ("ai research", R_AI_RESEARCH), ("genai / llm", R_GENAI),
     ("mlops", R_MLOPS), ("ml engineer", R_ML),
     ("ai consultant", R_AI_CONSULT), ("ai engineer", R_AI_ENGINEER),
+    ("embedded / qa", R_SWE_OUT),
+    ("fullstack engineer", R_FULLSTACK), ("mobile engineer", R_MOBILE),
+    ("frontend engineer", R_FRONTEND), ("backend engineer", R_BACKEND),
+    ("devops / cloud", R_DEVOPS), ("software engineer", R_SWE),
     ("ai (other)", R_AI_OTHER),
 ]
 
@@ -235,9 +289,41 @@ CASES = [
     ("Artificial Intelligence Engineer",     "ai engineer"),
     ("AI Specialist",                        "ai engineer"),
     # the vague bucket: these are the ones that used to inflate ai / ml
-    ("Software Engineer with AI focus",      "ai (other)"),
     ("Projektmanager KI",                    "ai (other)"),
-    ("Fullstack Developer (AI Startup)",     "ai (other)"),
+    # software roles that mention AI count as the role they name
+    ("Software Engineer with AI focus",      "software engineer"),
+    ("Fullstack Developer (AI Startup)",     "fullstack engineer"),
+    # software engineering
+    ("Senior Software Engineer (m/w/d)",     "software engineer"),
+    ("Softwareentwickler C++ (m/w/d)",       "software engineer"),
+    ("Anwendungsentwickler Java",            "backend engineer"),
+    ("Java Developer",                       "backend engineer"),
+    ("Backend Engineer Go",                  "backend engineer"),
+    ("Python Entwickler (m/w/d)",            "backend engineer"),
+    (".NET Developer",                       "backend engineer"),
+    ("Frontend Developer React",             "frontend engineer"),
+    ("Angular Entwickler",                   "frontend engineer"),
+    ("Webentwickler (m/w/d)",                "frontend engineer"),
+    ("JavaScript Developer",                 "frontend engineer"),
+    ("Full-Stack Engineer TypeScript",       "fullstack engineer"),
+    ("iOS Developer",                        "mobile engineer"),
+    ("Android Software Engineer",            "mobile engineer"),
+    ("App-Entwickler Flutter",               "mobile engineer"),
+    ("DevOps Engineer",                      "devops / cloud"),
+    ("Site Reliability Engineer",            "devops / cloud"),
+    ("Cloud Engineer AWS",                   "devops / cloud"),
+    ("Platform Engineer Kubernetes",         "devops / cloud"),
+    ("Cloud Architekt Azure",                "devops / cloud"),
+    # out of scope software
+    ("Embedded Software Engineer",           "embedded / qa"),
+    ("Firmware Entwickler",                  "embedded / qa"),
+    ("QA Engineer",                          "embedded / qa"),
+    ("Software Tester",                      "embedded / qa"),
+    # data and AI still beat software
+    ("Data Platform Engineer",               "data engineer"),
+    ("AI Software Engineer",                 "ai engineer"),
+    ("ML Platform Engineer",                 "mlops"),
+    ("Werkstudent Softwareentwicklung",      "entry programme"),
     # data still beats AI
     ("Data & AI Consultant",                 "data consultant"),
     ("Data Engineer AI Platform",            "data engineer"),
@@ -350,8 +436,10 @@ s = (b
     #   1. junk        -> invalid
     #   2. hard excludes that must beat every positive rule
     #   3. data families, most specific first
-    #   4. AI families, most specific first, vague catch-all last
-    #   5. anything left -> other
+    #   4. AI families, most specific first
+    #   5. software families (embedded / qa excluded first)
+    #   6. vague AI catch-all
+    #   7. anything left -> other
     .withColumn("role_family",
         F.when(F.col("title_norm").rlike(INVALID), "invalid")
 
@@ -382,6 +470,17 @@ s = (b
          .when(F.col("title_norm").rlike(R_ML), "ml engineer")
          .when(F.col("title_norm").rlike(R_AI_CONSULT), "ai consultant")
          .when(F.col("title_norm").rlike(R_AI_ENGINEER), "ai engineer")
+
+         .when(F.col("title_norm").rlike(R_SWE_OUT), "embedded / qa")
+         .when(F.col("title_norm").rlike(R_FULLSTACK),
+               "fullstack engineer")
+         .when(F.col("title_norm").rlike(R_MOBILE), "mobile engineer")
+         .when(F.col("title_norm").rlike(R_FRONTEND),
+               "frontend engineer")
+         .when(F.col("title_norm").rlike(R_BACKEND), "backend engineer")
+         .when(F.col("title_norm").rlike(R_DEVOPS), "devops / cloud")
+         .when(F.col("title_norm").rlike(R_SWE), "software engineer")
+
          .when(F.col("title_norm").rlike(R_AI_OTHER), "ai (other)")
 
          .otherwise("other"))
@@ -397,6 +496,10 @@ s = (b
             "data architect", "analytics engineer", "dwh / etl",
             "data governance", "data consultant", "bi developer"),
             "data")
+         .when(F.col("role_family").isin(
+            "software engineer", "backend engineer", "frontend engineer",
+            "fullstack engineer", "mobile engineer", "devops / cloud"),
+            "software")
          .otherwise("excluded"))
 
     .withColumn("gendered_tag",
@@ -491,7 +594,7 @@ print(f"quarantined     : {quarantine.count():,}")
 
 # MAGIC %md
 # MAGIC ## Scope filter
-# MAGIC Everything that is not a data or AI role is removed here, and
+# MAGIC Everything that is not a data, AI or software role is removed here, and
 # MAGIC written to `silver.excluded` so the decision can be audited.
 
 # COMMAND ----------
@@ -507,9 +610,14 @@ DATA_FAMILIES = ["data engineer", "data analyst", "data scientist",
 AI_FAMILIES = ["ai engineer", "genai / llm", "ml engineer", "mlops",
                "ai consultant", "ai research"]
 
+# "embedded / qa" is classified but not published, like "ai (other)".
+SWE_FAMILIES = ["software engineer", "backend engineer",
+                "frontend engineer", "fullstack engineer",
+                "mobile engineer", "devops / cloud"]
+
 VAGUE_FAMILY = "ai (other)"
 
-KEEP = DATA_FAMILIES + AI_FAMILIES
+KEEP = DATA_FAMILIES + AI_FAMILIES + SWE_FAMILIES
 
 
 MAX_AGE_DAYS = 365
@@ -532,7 +640,7 @@ n_stale = stale.count()
 n_drop  = off_scope.count()
 n_all   = n_keep + n_stale + n_drop
 
-print(f"kept        : {n_keep:,} live data and AI roles")
+print(f"kept        : {n_keep:,} live data, AI and software roles")
 print(f"out of scope: {n_drop:,} ({n_drop / n_all:.1%})")
 print(f"stale >{MAX_AGE_DAYS}d : {n_stale:,} ({n_stale / n_all:.1%})")
 print()

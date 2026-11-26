@@ -2,7 +2,7 @@
 # MAGIC %md
 # MAGIC # 01 - Ingest from the Adzuna API (DACH)
 # MAGIC
-# MAGIC Pulls live data-job postings for **Germany, Austria and
+# MAGIC Pulls live data, AI and software-engineering job postings for **Germany, Austria and
 # MAGIC Switzerland** and caches every raw response verbatim to a Unity
 # MAGIC Catalog volume.
 # MAGIC
@@ -36,6 +36,16 @@ ROLES = [
     "big data engineer",
     "mlops engineer",
     "data warehouse",
+    # software engineering
+    "software engineer",
+    "softwareentwickler",
+    "backend developer",
+    "frontend developer",
+    "fullstack developer",
+    "mobile developer",
+    "devops engineer",
+    "cloud engineer",
+    "site reliability engineer",
 ]
 
 MAX_PAGES = 45         

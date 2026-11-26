@@ -75,3 +75,28 @@ def test_evaluate_catches_a_miss():
              "skills_true": "python;spark"}]
     r = evaluate(rows)
     assert r["recall"] < 1.0
+
+
+def test_react_native_is_not_react():
+    assert extract("We build with React Native") == ["react_native"]
+
+
+def test_react_and_typescript():
+    assert set(extract("React.js with TypeScript and Node.js")) == {
+        "react", "typescript", "nodejs"}
+
+
+def test_typescript_is_not_javascript():
+    assert extract("TypeScript only") == ["typescript"]
+
+
+def test_csharp_dotnet_and_cpp():
+    assert set(extract("C# / .NET and some C++")) == {"csharp", "cpp"}
+
+
+def test_swift_banking_network_is_not_swift():
+    assert "swift" not in extract("Erfahrung mit SWIFT MT Nachrichten")
+
+
+def test_swift_language():
+    assert "swift" in extract("iOS development in Swift and SwiftUI")

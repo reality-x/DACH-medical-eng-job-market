@@ -645,7 +645,7 @@ display(pub.groupBy("role_family").count().orderBy(F.desc("count")))
 # MAGIC %sql
 # MAGIC
 # MAGIC -- 2. add country and role_group to role_breakdown
-# MAGIC --    role_group is 'data' or 'ai'. It exists so a chart can roll
+# MAGIC --    role_group is 'data', 'ai' or 'software'. It exists so a chart can roll
 # MAGIC --    the six AI families back up to one bar without anyone
 # MAGIC --    hardcoding the six names again.
 # MAGIC CREATE OR REPLACE TABLE jobs.gold.role_breakdown AS

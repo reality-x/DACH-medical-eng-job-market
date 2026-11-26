@@ -4,8 +4,7 @@ SKILLS = {
  "python":      {"cat": "language",   "aliases": [r"\bpython\b"]},
  "scala":       {"cat": "language",   "aliases": [r"\bscala\b"]},
  "java":        {"cat": "language",   "aliases": [r"\bjava\b(?!script)"]},
- "javascript":  {"cat": "language",   "aliases": [r"\bjavascript\b",
-                                                 r"\btypescript\b"]},
+ "javascript":  {"cat": "language",   "aliases": [r"\bjavascript\b"]},
  "php":         {"cat": "language",   "aliases": [r"\bphp\b"]},
  "r_lang":      {"cat": "language",   "aliases": [
                                                  r"(?<=[ ,/(])r(?=[ ,/)])"]},
@@ -82,6 +81,34 @@ SKILLS = {
                                                  r"\bgenai\b",
                                                  r"\bgenerative ai\b",
                                                  r"\brag\b"]},
+
+ # --- software engineering ------------------------------------
+ "typescript": {"cat": "language",   "aliases": [r"\btypescript\b"]},
+ "golang":     {"cat": "language",   "aliases": [r"\bgolang\b",
+                                                 r"\bgo \(golang\)"]},
+ "csharp":     {"cat": "language",   "aliases": [r"\bc#", r"\.net\b",
+                                                 r"\bdotnet\b"]},
+ "cpp":        {"cat": "language",   "aliases": [r"\bc\+\+"]},
+ "kotlin":     {"cat": "language",   "aliases": [r"\bkotlin\b"]},
+ "rust":       {"cat": "language",   "aliases": [r"\brust\b"]},
+ "react":      {"cat": "frontend",   "aliases": [r"\breact(\.?js)?\b"
+                                                 r"(?! native)"]},
+ "angular":    {"cat": "frontend",   "aliases": [r"\bangular(js)?\b"]},
+ "vue":        {"cat": "frontend",   "aliases": [r"\bvue(\.?js)?\b"]},
+ "nodejs":     {"cat": "backend",    "aliases": [r"\bnode\.?js\b"]},
+ "spring":     {"cat": "backend",    "aliases": [r"\bspring boot\b",
+                                                 r"\bspring framework\b"]},
+ "django":     {"cat": "backend",    "aliases": [r"\bdjango\b",
+                                                 r"\bfastapi\b",
+                                                 r"\bflask\b"]},
+ # SWIFT is also the bank messaging network
+ "swift":      {"cat": "mobile",     "aliases": [r"\bswiftui\b",
+                                                 r"\bswift\b(?![\s\-]"
+                                                 r"?(mt|mx|messag|network|"
+                                                 r"code|zahlung|payment))"]},
+ "react_native": {"cat": "mobile",   "aliases": [r"\breact native\b"]},
+ "flutter":    {"cat": "mobile",     "aliases": [r"\bflutter\b"]},
+ "ansible":    {"cat": "devops",     "aliases": [r"\bansible\b"]},
 
  # practice
  "sap":           {"cat": "enterprise", "aliases": [r"\bsap\b"]},

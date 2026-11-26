@@ -11,9 +11,14 @@ const CORAL = "#E56743", CLAY = "#D07B55", SAGE = "#6FA37F",
 const ROSE = "#BE5B7E", INDIGO = "#6A6DB0", OLIVE = "#93A04B",
       OCEAN = "#3E7E96", STONE = "#8A857C", RUST  = "#A55A33";
 
+/* Software engineering families: a third, greener/bluer block. */
+const SKY = "#6FA8C9", NAVY = "#3F5A7A", LIME  = "#A3B65A",
+      GRAPE = "#7D5BA6", COCOA = "#7A5C48", MINT = "#5FB3A0";
+
 const CATS = [CORAL, STEEL, SAGE, AMBER, PLUM, TEAL,
               CLAY, SAND, MOSS, DEEP,
-              ROSE, INDIGO, OLIVE, OCEAN, STONE, RUST];
+              ROSE, INDIGO, OLIVE, OCEAN, STONE, RUST,
+              SKY, NAVY, LIME, GRAPE, COCOA, MINT];
 
 /* Fixed colour per role, so a role keeps its colour across
    every chart on the page even when the sort order differs. The AI
@@ -29,7 +34,11 @@ const ROLE_COLOUR = {
   "data scientist":     TEAL,   "data architect":  INDIGO,
   "analytics engineer": MOSS,   "dwh / etl":       OCEAN,
   "data governance":    PLUM,   "data consultant": OLIVE,
-  "bi developer":       ROSE
+  "bi developer":       ROSE,
+
+  "software engineer":  NAVY,   "backend engineer":  SKY,
+  "frontend engineer":  LIME,   "fullstack engineer": MINT,
+  "mobile engineer":    GRAPE,  "devops / cloud":    COCOA
 };
 
 /* falls back to the cycle for any family the map has not seen */
@@ -77,6 +86,9 @@ const SKILL_CAT_LABEL = {
   platform:     "Platform",
   enterprise:   "Enterprise",
   practice:     "Practices",
+  frontend:     "Frontend",
+  backend:      "Backend",
+  mobile:       "Mobile",
   legacy:       "Legacy"
 };
 const scat = c => SKILL_CAT_LABEL[c] || String(c).replace(/_/g, " ");
@@ -84,6 +96,11 @@ const scat = c => SKILL_CAT_LABEL[c] || String(c).replace(/_/g, " ");
 /* Skills are published as dictionary keys ("ai_agents", "powerbi").
    Display names only; filters and searches keep the keys.          */
 const SKILL_LABEL = {
+  angular: "Angular", ansible: "Ansible", cpp: "C++", csharp: "C# / .NET",
+  django: "Django / FastAPI / Flask", flutter: "Flutter", golang: "Go",
+  kotlin: "Kotlin", nodejs: "Node.js", react: "React",
+  react_native: "React Native", rust: "Rust", spring: "Spring",
+  swift: "Swift", typescript: "TypeScript", vue: "Vue",
   ai_agents: "AI agents", ai_eval: "AI evaluation", airflow: "Airflow",
   aws: "AWS", azure: "Azure", azureml: "Azure ML", bigquery: "BigQuery",
   cicd: "CI/CD", cv: "Computer vision", databricks: "Databricks",
@@ -253,6 +270,13 @@ const ROLE_LABEL = {
   "data governance":    "Data Governance and Security",
   "data consultant":    "Data Consultant",
   "bi developer":       "BI Developer",
+
+  "software engineer":  "Software Engineer",
+  "backend engineer":   "Backend Engineer",
+  "frontend engineer":  "Frontend Engineer",
+  "fullstack engineer": "Fullstack Engineer",
+  "mobile engineer":    "Mobile Engineer",
+  "devops / cloud":     "DevOps / Cloud / SRE",
   "all roles":          "All roles"
 };
 /* Chart.js clips a y-axis label once it needs more than about a

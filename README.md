@@ -1,6 +1,6 @@
 <div align="center">
 
-# What's up with the AI/Data job market in Austria, Germany and Switzerland?
+# What's up with the AI, Data and Software Engineering job market in Austria, Germany and Switzerland?
 
 [![tests](https://img.shields.io/github/actions/workflow/status/Chrisinho8/DACH-data-job-market/tests.yml?branch=main&label=tests&labelColor=221F1A&color=6FA37F&style=flat-square)](https://github.com/Chrisinho8/DACH-data-job-market/actions/workflows/tests.yml)
 [![live postings](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FChrisinho8%2FDACH-data-job-market%2Fmain%2Fdocs%2Fdata%2Fmeta.json&query=%24.live_postings&label=live%20postings&labelColor=221F1A&color=E3A23F&style=flat-square&cacheSeconds=1800)](https://Chrisinho8.github.io/DACH-data-job-market/)
@@ -9,7 +9,7 @@
 
 </div>
 
-A daily snapshot of the DACH AI/data-job market: **3,500+ live postings from 1,500+ employers** across Germany, Austria and Switzerland. Every day at 08:00 UTC+2 a Databricks pipeline queries the Adzuna API for 18 AI/data related job titles in all three countries, deduplicates and classifies the results through a bronze/silver/gold Delta Lake. It then gets scanned against a curated 71-term skills dictionary and published to a static GitHub Page.
+A daily snapshot of the DACH AI, data and software-engineering job market: **3,500+ live postings from 1,500+ employers** across Germany, Austria and Switzerland. Every day at 08:00 UTC+2 a Databricks pipeline queries the Adzuna API for 21 AI, data and software-engineering job titles in all three countries, deduplicates and classifies the results through a bronze/silver/gold Delta Lake. It then gets scanned against a curated 87-term skills dictionary and published to a static GitHub Page.
 
 ## How the tracker might help you
 
@@ -40,13 +40,15 @@ Demo of 06/11/2026
 
 
  
-## Scope: what counts as a AI/Data job
+## Scope: what counts as an AI, Data or Software Engineering job
 
 **Data:** data engineer, data analyst, data scientist, data architect, analytics engineer, DWH / ETL, data governance, data consultant, BI developer.
 
 **AI:** AI engineer, GenAI / LLM, ML engineer, MLOps, AI consultant, AI research.
 
-**Excluded:**  Titles saying "AI"/"KI" and naming no role, Data centre infrastructure, General software, cloud and DevOps engineering, 
+**Software engineering:** software engineer, backend, frontend, fullstack, mobile, DevOps / cloud / SRE.
+
+**Excluded:**  Titles saying "AI"/"KI" and naming no role, Data centre infrastructure, Embedded / firmware and QA / test engineering, 
 Speculative applications.
 
 Note: Excluded rows land in `silver.excluded` so the decision stays auditable.
@@ -54,7 +56,7 @@ Note: Excluded rows land in `silver.excluded` so the decision stays auditable.
 ## Architecture of the pipeline
 
 ```
-Adzuna API              de · at · ch, 16 job titles
+Adzuna API              de · at · ch, 21 job titles
     │
     ▼
 Unity Catalog volume    raw JSON cached, one file per query

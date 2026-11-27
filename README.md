@@ -96,14 +96,23 @@ GitHub Pages            static site, no backend
 
 ### Option 1: GitHub Actions (no Databricks)
 
-`src/pipeline.py` is a single-process port of notebooks 01-06 that writes the same `docs/data/*.json`. `.github/workflows/pipeline.yml` runs it daily at 06:00 UTC and commits the result, and GitHub Pages (serving `docs/` from `main`) picks it up.
+`src/pipeline.py` merges two sources and rebuilds every `docs/data/*.json` file the site reads:
 
-1. Get an Adzuna key and choose a plan. The free trial is 25 calls in total, which is not enough for a run; "API Access" (500 calls/day, 5,000/month) is.
-2. In the repo, go to **Settings → Secrets and variables → Actions** and add the secrets `ADZUNA_APP_ID` and `ADZUNA_APP_KEY`.
-3. **Actions → pipeline → Run workflow** for a first run. The `call_budget` input caps API calls (default 160, which fits 5,000/month).
-4. Add the repository variable `PIPELINE_ENABLED = true` to turn on the daily schedule. Optionally set `CALL_BUDGET`.
+- **AI and data postings** come from the [upstream tracker](https://chrisinho8.github.io/DACH-data-job-market/) by Christoph Ruckensteiner (MIT): its published `docs/data/postings.json`, already classified. Fetching it costs no Adzuna calls.
+- **Software engineering postings** come from this repo's own Adzuna queries (9 titles, Germany and Switzerland), stored in `state/swe_postings.json`.
 
-Only Germany and Switzerland are queried, to fit the quota. Calls are spent breadth first: page 1 of every query before page 2 of any, so a small budget still covers every role, and German results are a sample rather than a census. `state/registry.tsv` records every posting ever seen so `new_postings_daily` keeps accumulating; `state/new_postings_seed.json` holds the frozen Databricks-era counts.
+`.github/workflows/pipeline.yml` runs in two modes:
+
+| Trigger | Budget | What it does |
+|---|---|---|
+| Daily at 06:00 UTC | 0 calls | Fresh upstream AI/data + the stored SWE snapshot, ages moved forward |
+| Actions → pipeline → Run workflow | 25 calls (default) | Also refreshes the SWE snapshot |
+
+25 calls is the Adzuna free tier's monthly allowance: page 1 of all 18 SWE queries plus 7 deeper German pages, about 500–1,000 SWE postings. The script waits 13 s between calls to stay under the free tier's 5 calls/minute (`CALL_PACE` variable to change it).
+
+Setup: add `ADZUNA_APP_ID` and `ADZUNA_APP_KEY` under **Settings → Secrets and variables → Actions**, then run the workflow manually once.
+
+Austria is left out on both sides so every country carries every role group. SWE figures are as old as the last manual run (`swe_updated` in `meta.json`), while AI/data refresh daily. Upstream rows carry no salary, so "% with salary" is computed over the SWE rows only.
 
 The title rules in `src/classify.py` are copied from `notebooks/03_silver_clean.py`. Change both together; `tests/test_classify.py` checks them.
 

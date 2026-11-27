@@ -1,0 +1,210 @@
+[
+ {
+  "skill": "telematik",
+  "skill_category": "health_it",
+  "n_postings": 12,
+  "pct_postings": 4.7,
+  "avg_age_days": 6.3,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "mdr",
+  "skill_category": "regulation",
+  "n_postings": 8,
+  "pct_postings": 3.1,
+  "avg_age_days": 3.3,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "validation",
+  "skill_category": "practice",
+  "n_postings": 6,
+  "pct_postings": 2.4,
+  "avg_age_days": 4.7,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "iso13485",
+  "skill_category": "standard",
+  "n_postings": 6,
+  "pct_postings": 2.4,
+  "avg_age_days": 3.5,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "ivdr",
+  "skill_category": "regulation",
+  "n_postings": 5,
+  "pct_postings": 2.0,
+  "avg_age_days": 3.6,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "iso9001",
+  "skill_category": "standard",
+  "n_postings": 5,
+  "pct_postings": 2.0,
+  "avg_age_days": 3.2,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "risk_mgmt",
+  "skill_category": "practice",
+  "n_postings": 4,
+  "pct_postings": 1.6,
+  "avg_age_days": 2.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "tech_doc",
+  "skill_category": "practice",
+  "n_postings": 4,
+  "pct_postings": 1.6,
+  "avg_age_days": 1.5,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "kis",
+  "skill_category": "health_it",
+  "n_postings": 4,
+  "pct_postings": 1.6,
+  "avg_age_days": 0.3,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "gmp",
+  "skill_category": "regulation",
+  "n_postings": 4,
+  "pct_postings": 1.6,
+  "avg_age_days": 5.8,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "fda",
+  "skill_category": "regulation",
+  "n_postings": 4,
+  "pct_postings": 1.6,
+  "avg_age_days": 3.8,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "submissions",
+  "skill_category": "practice",
+  "n_postings": 3,
+  "pct_postings": 1.2,
+  "avg_age_days": 0.7,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "audits",
+  "skill_category": "practice",
+  "n_postings": 3,
+  "pct_postings": 1.2,
+  "avg_age_days": 4.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "iso14971",
+  "skill_category": "standard",
+  "n_postings": 2,
+  "pct_postings": 0.8,
+  "avg_age_days": 3.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "dicom",
+  "skill_category": "health_it",
+  "n_postings": 2,
+  "pct_postings": 0.8,
+  "avg_age_days": 1.5,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "python",
+  "skill_category": "tool",
+  "n_postings": 2,
+  "pct_postings": 0.8,
+  "avg_age_days": 4.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "pms",
+  "skill_category": "practice",
+  "n_postings": 2,
+  "pct_postings": 0.8,
+  "avg_age_days": 0.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "vigilance",
+  "skill_category": "practice",
+  "n_postings": 2,
+  "pct_postings": 0.8,
+  "avg_age_days": 3.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "diga",
+  "skill_category": "regulation",
+  "n_postings": 2,
+  "pct_postings": 0.8,
+  "avg_age_days": 8.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "fhir",
+  "skill_category": "health_it",
+  "n_postings": 2,
+  "pct_postings": 0.8,
+  "avg_age_days": 4.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "hl7",
+  "skill_category": "health_it",
+  "n_postings": 1,
+  "pct_postings": 0.4,
+  "avg_age_days": 0.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "clinical_eval",
+  "skill_category": "practice",
+  "n_postings": 1,
+  "pct_postings": 0.4,
+  "avg_age_days": 0.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "reimbursement",
+  "skill_category": "practice",
+  "n_postings": 1,
+  "pct_postings": 0.4,
+  "avg_age_days": 2.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "cad",
+  "skill_category": "tool",
+  "n_postings": 1,
+  "pct_postings": 0.4,
+  "avg_age_days": 13.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "capa",
+  "skill_category": "practice",
+  "n_postings": 1,
+  "pct_postings": 0.4,
+  "avg_age_days": 5.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "skill": "design_control",
+  "skill_category": "practice",
+  "n_postings": 1,
+  "pct_postings": 0.4,
+  "avg_age_days": 8.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ }
+]

@@ -1,0 +1,23 @@
+{
+ "updated": "2026-11-27",
+ "live_postings": 254,
+ "employers": 144,
+ "avg_age_days": 3.4,
+ "median_age_days": 2.0,
+ "pct_over_60d": 0.0,
+ "quarantined": 21,
+ "quarantine_rate": 0.0764,
+ "postings_published": 254,
+ "desc_truncated_pct": 99.2,
+ "api_calls": 25,
+ "countries": [
+  "ch",
+  "de"
+ ],
+ "snapshot_updated": "2026-11-27",
+ "role_groups": {
+  "regulatory": 54,
+  "medtech": 138,
+  "digital health": 62
+ }
+}

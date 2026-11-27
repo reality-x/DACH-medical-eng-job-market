@@ -1,0 +1,72 @@
+[
+ {
+  "role_family": "medtech production",
+  "skill": "iso13485",
+  "skill_category": "standard",
+  "n_postings": 5,
+  "role_postings": 27,
+  "pct_role_postings": 18.5,
+  "avg_age_days": 3.2,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "role_family": "medtech production",
+  "skill": "iso9001",
+  "skill_category": "standard",
+  "n_postings": 5,
+  "role_postings": 27,
+  "pct_role_postings": 18.5,
+  "avg_age_days": 3.2,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "role_family": "medtech production",
+  "skill": "gmp",
+  "skill_category": "regulation",
+  "n_postings": 4,
+  "role_postings": 27,
+  "pct_role_postings": 14.8,
+  "avg_age_days": 5.8,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "role_family": "medtech production",
+  "skill": "fda",
+  "skill_category": "regulation",
+  "n_postings": 4,
+  "role_postings": 27,
+  "pct_role_postings": 14.8,
+  "avg_age_days": 3.8,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "role_family": "medtech r&d",
+  "skill": "ivdr",
+  "skill_category": "regulation",
+  "n_postings": 5,
+  "role_postings": 42,
+  "pct_role_postings": 11.9,
+  "avg_age_days": 3.6,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "role_family": "medtech r&d",
+  "skill": "mdr",
+  "skill_category": "regulation",
+  "n_postings": 5,
+  "role_postings": 42,
+  "pct_role_postings": 11.9,
+  "avg_age_days": 3.6,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "role_family": "medtech r&d",
+  "skill": "risk_mgmt",
+  "skill_category": "practice",
+  "n_postings": 3,
+  "role_postings": 42,
+  "pct_role_postings": 7.1,
+  "avg_age_days": 2.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ }
+]

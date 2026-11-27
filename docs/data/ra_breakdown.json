@@ -1,0 +1,58 @@
+[
+ {
+  "role_family": "ra specialist",
+  "n_postings": 25,
+  "pct_of_ra": 46.3,
+  "pct_of_market": 9.8,
+  "employers": 17,
+  "avg_age_days": 3.4,
+  "median_age_days": 2,
+  "pct_over_60d": 0.0,
+  "pct_junior": 0.0,
+  "pct_english": 24.0,
+  "pct_agency": 8.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "role_family": "quality management",
+  "n_postings": 14,
+  "pct_of_ra": 25.9,
+  "pct_of_market": 5.5,
+  "employers": 11,
+  "avg_age_days": 2.7,
+  "median_age_days": 2,
+  "pct_over_60d": 0.0,
+  "pct_junior": 7.1,
+  "pct_english": 28.6,
+  "pct_agency": 0.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "role_family": "ra manager",
+  "n_postings": 11,
+  "pct_of_ra": 20.4,
+  "pct_of_market": 4.3,
+  "employers": 9,
+  "avg_age_days": 2.8,
+  "median_age_days": 2,
+  "pct_over_60d": 0.0,
+  "pct_junior": 0.0,
+  "pct_english": 45.5,
+  "pct_agency": 0.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ },
+ {
+  "role_family": "clinical affairs",
+  "n_postings": 4,
+  "pct_of_ra": 7.4,
+  "pct_of_market": 1.6,
+  "employers": 4,
+  "avg_age_days": 2.8,
+  "median_age_days": 0,
+  "pct_over_60d": 0.0,
+  "pct_junior": 25.0,
+  "pct_english": 25.0,
+  "pct_agency": 0.0,
+  "snapshot_date": "2026-11-27T00:00:00.000"
+ }
+]

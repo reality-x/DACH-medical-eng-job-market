@@ -1,0 +1,374 @@
+[
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "live_postings",
+  "dimension": "all",
+  "value": 254.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "avg_age_days",
+  "dimension": "all",
+  "value": 3.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "pct_over_60d",
+  "dimension": "all",
+  "value": 0.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "telematik",
+  "value": 4.7
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "mdr",
+  "value": 3.1
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "validation",
+  "value": 2.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "iso13485",
+  "value": 2.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "ivdr",
+  "value": 2.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "iso9001",
+  "value": 2.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "risk_mgmt",
+  "value": 1.6
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "tech_doc",
+  "value": 1.6
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "kis",
+  "value": 1.6
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "gmp",
+  "value": 1.6
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "fda",
+  "value": 1.6
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "submissions",
+  "value": 1.2
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "audits",
+  "value": 1.2
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "iso14971",
+  "value": 0.8
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "dicom",
+  "value": 0.8
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "python",
+  "value": 0.8
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "pms",
+  "value": 0.8
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "vigilance",
+  "value": 0.8
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "diga",
+  "value": 0.8
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "fhir",
+  "value": 0.8
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "hl7",
+  "value": 0.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "clinical_eval",
+  "value": 0.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "reimbursement",
+  "value": 0.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "cad",
+  "value": 0.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "capa",
+  "value": 0.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "skill_pct",
+  "dimension": "design_control",
+  "value": 0.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "clinical affairs",
+  "value": 4.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "clinical affairs",
+  "value": 2.8
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "digital health consulting",
+  "value": 35.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "digital health consulting",
+  "value": 4.3
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "digital health engineer",
+  "value": 8.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "digital health engineer",
+  "value": 3.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "digital health product",
+  "value": 3.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "digital health product",
+  "value": 5.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "health it",
+  "value": 16.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "health it",
+  "value": 4.2
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "medtech product",
+  "value": 1.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "medtech product",
+  "value": 0.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "medtech production",
+  "value": 27.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "medtech production",
+  "value": 4.7
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "medtech r&d",
+  "value": 42.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "medtech r&d",
+  "value": 3.2
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "medtech sales",
+  "value": 24.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "medtech sales",
+  "value": 2.3
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "medtech service",
+  "value": 39.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "medtech service",
+  "value": 2.3
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "medtech software",
+  "value": 5.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "medtech software",
+  "value": 4.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "quality management",
+  "value": 14.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "quality management",
+  "value": 2.7
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "ra manager",
+  "value": 11.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "ra manager",
+  "value": 2.8
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_count",
+  "dimension": "ra specialist",
+  "value": 25.0
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "role_avg_age_days",
+  "dimension": "ra specialist",
+  "value": 3.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "ra_family_pct",
+  "dimension": "ra specialist",
+  "value": 46.3
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "ra_family_pct",
+  "dimension": "quality management",
+  "value": 25.9
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "ra_family_pct",
+  "dimension": "ra manager",
+  "value": 20.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "ra_family_pct",
+  "dimension": "clinical affairs",
+  "value": 7.4
+ },
+ {
+  "snapshot_date": "2026-11-27T00:00:00.000",
+  "metric": "ra_share_of_market",
+  "dimension": "all",
+  "value": 21.2
+ }
+]

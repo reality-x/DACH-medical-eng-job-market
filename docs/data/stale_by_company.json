@@ -1,0 +1,50 @@
+[
+ {
+  "company": "Job-Room",
+  "is_agency": false,
+  "n_postings": 35,
+  "avg_age_days": 7.3,
+  "oldest_days": 13,
+  "pct_over_60d": 0.0
+ },
+ {
+  "company": "Fresenius Medical Care",
+  "is_agency": false,
+  "n_postings": 5,
+  "avg_age_days": 3.4,
+  "oldest_days": 7,
+  "pct_over_60d": 0.0
+ },
+ {
+  "company": "Hasso-Plattner-Institut für Digital Engineering gGmbH",
+  "is_agency": false,
+  "n_postings": 10,
+  "avg_age_days": 2.8,
+  "oldest_days": 9,
+  "pct_over_60d": 0.0
+ },
+ {
+  "company": "Brunel",
+  "is_agency": false,
+  "n_postings": 5,
+  "avg_age_days": 1.8,
+  "oldest_days": 5,
+  "pct_over_60d": 0.0
+ },
+ {
+  "company": "sanotact GmbH",
+  "is_agency": false,
+  "n_postings": 5,
+  "avg_age_days": 0.0,
+  "oldest_days": 0,
+  "pct_over_60d": 0.0
+ },
+ {
+  "company": "ARES Recruiting GmbH",
+  "is_agency": true,
+  "n_postings": 6,
+  "avg_age_days": 0.0,
+  "oldest_days": 0,
+  "pct_over_60d": 0.0
+ }
+]

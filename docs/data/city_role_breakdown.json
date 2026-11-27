@@ -1,0 +1,1280 @@
+[
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "medtech r&d",
+  "n_postings": 12,
+  "avg_age_days": 2.3,
+  "pct_english": 16.7,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "medtech service",
+  "n_postings": 11,
+  "avg_age_days": 0.2,
+  "pct_english": 9.1,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "digital health consulting",
+  "n_postings": 9,
+  "avg_age_days": 3.2,
+  "pct_english": 66.7,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "unknown",
+  "role_family": "medtech service",
+  "n_postings": 8,
+  "avg_age_days": 3.0,
+  "pct_english": 25.0,
+  "pct_agency": 25.0
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "medtech sales",
+  "n_postings": 7,
+  "avg_age_days": 1.7,
+  "pct_english": 14.3,
+  "pct_agency": 14.3
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "medtech production",
+  "n_postings": 7,
+  "avg_age_days": 2.1,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "zug",
+  "role_family": "medtech production",
+  "n_postings": 7,
+  "avg_age_days": 9.3,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "health it",
+  "n_postings": 6,
+  "avg_age_days": 3.5,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "unknown",
+  "role_family": "medtech r&d",
+  "n_postings": 6,
+  "avg_age_days": 3.8,
+  "pct_english": 33.3,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "unknown",
+  "role_family": "ra specialist",
+  "n_postings": 5,
+  "avg_age_days": 6.8,
+  "pct_english": 20.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "mannheim",
+  "role_family": "ra specialist",
+  "n_postings": 3,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 66.7
+ },
+ {
+  "country": "de",
+  "city": "pforzheim",
+  "role_family": "medtech production",
+  "n_postings": 3,
+  "avg_age_days": 2.3,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "wuerzburg",
+  "role_family": "quality management",
+  "n_postings": 3,
+  "avg_age_days": 2.7,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "digital health engineer",
+  "n_postings": 3,
+  "avg_age_days": 0.3,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "berlin",
+  "role_family": "health it",
+  "n_postings": 3,
+  "avg_age_days": 2.3,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "zuerich",
+  "role_family": "ra specialist",
+  "n_postings": 3,
+  "avg_age_days": 1.3,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "obwalden",
+  "role_family": "medtech service",
+  "n_postings": 3,
+  "avg_age_days": 2.3,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "zug",
+  "role_family": "medtech service",
+  "n_postings": 3,
+  "avg_age_days": 4.0,
+  "pct_english": 33.3,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "unknown",
+  "role_family": "digital health consulting",
+  "n_postings": 3,
+  "avg_age_days": 6.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "dortmund",
+  "role_family": "digital health consulting",
+  "n_postings": 3,
+  "avg_age_days": 11.7,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "koblenz",
+  "role_family": "digital health consulting",
+  "n_postings": 3,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "pfaeffikon",
+  "role_family": "medtech r&d",
+  "n_postings": 3,
+  "avg_age_days": 10.3,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "koeln",
+  "role_family": "ra specialist",
+  "n_postings": 2,
+  "avg_age_days": 1.5,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "bautzen",
+  "role_family": "medtech r&d",
+  "n_postings": 2,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 50.0
+ },
+ {
+  "country": "de",
+  "city": "rastatt",
+  "role_family": "medtech service",
+  "n_postings": 2,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "potsdam",
+  "role_family": "digital health consulting",
+  "n_postings": 2,
+  "avg_age_days": 4.5,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "berlin",
+  "role_family": "digital health consulting",
+  "n_postings": 2,
+  "avg_age_days": 0.5,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "barnim",
+  "role_family": "digital health consulting",
+  "n_postings": 2,
+  "avg_age_days": 4.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "stuttgart",
+  "role_family": "health it",
+  "n_postings": 2,
+  "avg_age_days": 7.5,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "muenchen",
+  "role_family": "digital health consulting",
+  "n_postings": 2,
+  "avg_age_days": 3.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "bremen",
+  "role_family": "ra specialist",
+  "n_postings": 2,
+  "avg_age_days": 1.5,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "karlsruhe",
+  "role_family": "ra manager",
+  "n_postings": 2,
+  "avg_age_days": 2.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "darmstadt",
+  "role_family": "medtech r&d",
+  "n_postings": 2,
+  "avg_age_days": 2.5,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "unknown",
+  "role_family": "medtech sales",
+  "n_postings": 2,
+  "avg_age_days": 4.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "zurzach",
+  "role_family": "medtech r&d",
+  "n_postings": 2,
+  "avg_age_days": 3.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "biel",
+  "role_family": "medtech sales",
+  "n_postings": 2,
+  "avg_age_days": 5.5,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "bern",
+  "role_family": "medtech service",
+  "n_postings": 2,
+  "avg_age_days": 7.5,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "dielsdorf",
+  "role_family": "digital health engineer",
+  "n_postings": 2,
+  "avg_age_days": 12.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "ra manager",
+  "n_postings": 2,
+  "avg_age_days": 4.5,
+  "pct_english": 50.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "clinical affairs",
+  "n_postings": 2,
+  "avg_age_days": 5.5,
+  "pct_english": 50.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "dortmund",
+  "role_family": "health it",
+  "n_postings": 2,
+  "avg_age_days": 11.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "basel",
+  "role_family": "ra specialist",
+  "n_postings": 2,
+  "avg_age_days": 12.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "medtech product",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "ra specialist",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "fuerstenfeldbruck",
+  "role_family": "ra manager",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "schweinfurt",
+  "role_family": "quality management",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "sankt wendel",
+  "role_family": "digital health consulting",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "mannheim",
+  "role_family": "ra manager",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "hochtaunuskreis",
+  "role_family": "digital health consulting",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "luebeck",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "quality management",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "augsburg",
+  "role_family": "medtech software",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "berlin",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "rheinisch-bergischer kreis",
+  "role_family": "medtech software",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "rheinisch-bergischer kreis",
+  "role_family": "quality management",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "meissen",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "potsdam-mittelmark",
+  "role_family": "medtech service",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "donau-ries",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "potsdam",
+  "role_family": "health it",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "berlin",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "muenchen",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "reutlingen",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "aschaffenburg",
+  "role_family": "quality management",
+  "n_postings": 1,
+  "avg_age_days": 3.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "frankfurt",
+  "role_family": "digital health product",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "koeln",
+  "role_family": "health it",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "wiesbaden",
+  "role_family": "digital health consulting",
+  "n_postings": 1,
+  "avg_age_days": 6.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "sankt wendel",
+  "role_family": "ra manager",
+  "n_postings": 1,
+  "avg_age_days": 6.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "rheingau-taunus-kreis",
+  "role_family": "digital health engineer",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "hannover",
+  "role_family": "digital health product",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "wuerzburg",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "tuttlingen",
+  "role_family": "medtech production",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "pforzheim",
+  "role_family": "quality management",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "berlin",
+  "role_family": "quality management",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "hamburg",
+  "role_family": "ra manager",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "tuebingen",
+  "role_family": "ra specialist",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "zollernalbkreis",
+  "role_family": "quality management",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "coesfeld",
+  "role_family": "ra specialist",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "hamburg",
+  "role_family": "ra specialist",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "visp",
+  "role_family": "ra manager",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "visp",
+  "role_family": "ra specialist",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "meilen",
+  "role_family": "ra specialist",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "schaffhausen",
+  "role_family": "medtech service",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "zug",
+  "role_family": "digital health consulting",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "bern",
+  "role_family": "quality management",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "lausanne",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "arlesheim",
+  "role_family": "medtech service",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "basel",
+  "role_family": "quality management",
+  "n_postings": 1,
+  "avg_age_days": 6.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "winterthur",
+  "role_family": "medtech production",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "horgen",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "st. gallen",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 2.0,
+  "pct_english": 0.0,
+  "pct_agency": 100.0
+ },
+ {
+  "country": "ch",
+  "city": "bern",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 3.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "uster",
+  "role_family": "medtech production",
+  "n_postings": 1,
+  "avg_age_days": 3.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "luzern",
+  "role_family": "medtech service",
+  "n_postings": 1,
+  "avg_age_days": 3.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "schaffhausen",
+  "role_family": "digital health consulting",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "zuerich",
+  "role_family": "medtech service",
+  "n_postings": 1,
+  "avg_age_days": 3.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "dorneck",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 5.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "zuerich",
+  "role_family": "medtech production",
+  "n_postings": 1,
+  "avg_age_days": 7.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "unknown",
+  "role_family": "medtech production",
+  "n_postings": 1,
+  "avg_age_days": 10.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "zofingen",
+  "role_family": "medtech production",
+  "n_postings": 1,
+  "avg_age_days": 11.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "zuerich",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 13.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "dietikon",
+  "role_family": "digital health engineer",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "march",
+  "role_family": "digital health engineer",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "olten",
+  "role_family": "digital health consulting",
+  "n_postings": 1,
+  "avg_age_days": 8.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "emmental",
+  "role_family": "digital health consulting",
+  "n_postings": 1,
+  "avg_age_days": 8.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "bremgarten",
+  "role_family": "medtech production",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "solothurn",
+  "role_family": "quality management",
+  "n_postings": 1,
+  "avg_age_days": 5.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "wuerzburg",
+  "role_family": "ra specialist",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "ostallgaeu",
+  "role_family": "ra manager",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "kempten",
+  "role_family": "ra specialist",
+  "n_postings": 1,
+  "avg_age_days": 3.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "muenchen",
+  "role_family": "medtech service",
+  "n_postings": 1,
+  "avg_age_days": 5.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "bielefeld",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 100.0
+ },
+ {
+  "country": "de",
+  "city": "bremen",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 100.0
+ },
+ {
+  "country": "de",
+  "city": "hannover",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 100.0
+ },
+ {
+  "country": "de",
+  "city": "hamburg",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 100.0
+ },
+ {
+  "country": "de",
+  "city": "mannheim",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 100.0
+ },
+ {
+  "country": "de",
+  "city": "heidelberg",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 100.0
+ },
+ {
+  "country": "de",
+  "city": "karlsruhe",
+  "role_family": "medtech production",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 100.0
+ },
+ {
+  "country": "de",
+  "city": "koeln",
+  "role_family": "medtech service",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "hannover",
+  "role_family": "medtech software",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "segeberg",
+  "role_family": "clinical affairs",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "muenster",
+  "role_family": "medtech service",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "tuebingen",
+  "role_family": "clinical affairs",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "chemnitz",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "ostholstein",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "mettmann",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "erlangen",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "altoetting",
+  "role_family": "medtech production",
+  "n_postings": 1,
+  "avg_age_days": 0.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "koeln",
+  "role_family": "digital health consulting",
+  "n_postings": 1,
+  "avg_age_days": 6.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "stuttgart",
+  "role_family": "digital health consulting",
+  "n_postings": 1,
+  "avg_age_days": 11.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "digital health product",
+  "n_postings": 1,
+  "avg_age_days": 14.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "wetteraukreis",
+  "role_family": "health it",
+  "n_postings": 1,
+  "avg_age_days": 1.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "luebeck",
+  "role_family": "medtech service",
+  "n_postings": 1,
+  "avg_age_days": 3.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "loerrach",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 5.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "roth",
+  "role_family": "quality management",
+  "n_postings": 1,
+  "avg_age_days": 5.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "berlin",
+  "role_family": "ra manager",
+  "n_postings": 1,
+  "avg_age_days": 6.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "tuebingen",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 7.0,
+  "pct_english": 0.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "de",
+  "city": "unknown",
+  "role_family": "medtech software",
+  "n_postings": 1,
+  "avg_age_days": 7.0,
+  "pct_english": 0.0,
+  "pct_agency": 100.0
+ },
+ {
+  "country": "ch",
+  "city": "kanton tessin",
+  "role_family": "medtech production",
+  "n_postings": 1,
+  "avg_age_days": 8.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "bern",
+  "role_family": "medtech software",
+  "n_postings": 1,
+  "avg_age_days": 10.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "bern",
+  "role_family": "medtech r&d",
+  "n_postings": 1,
+  "avg_age_days": 10.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "zug",
+  "role_family": "medtech sales",
+  "n_postings": 1,
+  "avg_age_days": 13.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ },
+ {
+  "country": "ch",
+  "city": "saane",
+  "role_family": "medtech service",
+  "n_postings": 1,
+  "avg_age_days": 13.0,
+  "pct_english": 100.0,
+  "pct_agency": 0.0
+ }
+]

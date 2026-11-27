@@ -1,0 +1,14 @@
+[
+ {
+  "bucket": "0-7 days",
+  "sort_key": 1,
+  "n_postings": 209,
+  "pct": 82.3
+ },
+ {
+  "bucket": "8-14 days",
+  "sort_key": 2,
+  "n_postings": 45,
+  "pct": 17.7
+ }
+]

@@ -1,0 +1,28 @@
+[
+ {
+  "country": "de",
+  "n_postings": 168,
+  "employers": 109,
+  "avg_age_days": 2.3,
+  "median_age_days": 1,
+  "pct_over_30d": 0.0,
+  "pct_over_60d": 0.0,
+  "pct_over_90d": 0.0,
+  "pct_english": 20.8,
+  "pct_with_salary": 1.2,
+  "pct_agency": 7.1
+ },
+ {
+  "country": "ch",
+  "n_postings": 86,
+  "employers": 36,
+  "avg_age_days": 5.4,
+  "median_age_days": 5,
+  "pct_over_30d": 0.0,
+  "pct_over_60d": 0.0,
+  "pct_over_90d": 0.0,
+  "pct_english": 41.9,
+  "pct_with_salary": 2.3,
+  "pct_agency": 3.5
+ }
+]

@@ -1302,6 +1302,157 @@ const nk = s => String(s)
     return LAND;
   }
 
+
+  /* ---- zoom and pan ------------------------------------------
+     Changes the viewBox rather than transforming the content, so
+     strokes (already non-scaling) and the tooltip keep working.
+     Bubbles shrink by 1/sqrt(k) as you zoom in, so a dense cluster
+     like Rhine-Ruhr separates instead of just getting bigger. Text
+     keeps its on-screen size through the --k CSS variable.
+     Plain wheel still scrolls the page; zoom is Ctrl/Cmd + wheel
+     (also what a trackpad pinch sends), double-click, the buttons,
+     or a two-finger pinch on touch screens once zoomed in.     */
+  const KMAX = 8;
+  let k = 1, vx = 0, vy = 0;          /* scale and top-left of view */
+  const plot = svg.closest(".map-plot");
+
+  const zc = document.createElement("div");
+  zc.className = "mapzoom";
+  zc.innerHTML =
+    '<button type="button" data-z="in" aria-label="Zoom in">+</button>' +
+    '<button type="button" data-z="out" aria-label="Zoom out">−</button>' +
+    '<button type="button" data-z="reset" aria-label="Reset map zoom">' +
+    '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">' +
+    '<path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" ' +
+    'fill="none" stroke="currentColor" stroke-width="1.6" ' +
+    'stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+  const hint = document.createElement("div");
+  hint.className = "mapzoom-hint";
+  hint.setAttribute("aria-hidden", "true");
+  hint.textContent = /Mac|iP(hone|ad)/.test(navigator.platform)
+    ? "Use ⌘ + scroll to zoom the map" : "Use Ctrl + scroll to zoom the map";
+  if (plot) { plot.appendChild(zc); plot.appendChild(hint); }
+
+  function applyZoom() {
+    vx = Math.min(Math.max(vx, 0), W - W / k);
+    vy = Math.min(Math.max(vy, 0), H - H / k);
+    svg.setAttribute("viewBox",
+      `${vx.toFixed(2)} ${vy.toFixed(2)} ${(W / k).toFixed(2)} ${(H / k).toFixed(2)}`);
+    svg.style.setProperty("--k", k);
+    svg.classList.toggle("zoomed", k > 1.001);
+    const g = 1 / Math.sqrt(k);                    /* bubble scale */
+    svg.querySelectorAll(".bub,.hit").forEach(c =>
+      c.setAttribute("r", (+c.dataset.r0 * g).toFixed(2)));
+    svg.querySelectorAll(".lbl").forEach(t => {
+      const x = +t.dataset.ax, y = +t.dataset.ay, rr = +t.dataset.rr * g;
+      const side = +t.dataset.side;
+      if (side === 0) t.setAttribute("x", x + rr + 4 / k);
+      if (side === 1) t.setAttribute("x", x - rr - 4 / k);
+      if (side === 2) t.setAttribute("y", y - rr - 9 / k);
+      if (side === 3) t.setAttribute("y", y + rr + 10 / k);
+    });
+    zc.querySelector('[data-z="in"]').disabled = k >= KMAX - 1e-6;
+    zc.querySelector('[data-z="out"]').disabled = k <= 1 + 1e-6;
+    zc.querySelector('[data-z="reset"]').disabled = k <= 1 + 1e-6;
+  }
+
+  /* client point -> map coordinates in the current view */
+  function toMap(cx, cy) {
+    const b = svg.getBoundingClientRect();
+    return [vx + (cx - b.left) / b.width * (W / k),
+            vy + (cy - b.top) / b.height * (H / k)];
+  }
+
+  /* zoom to scale nk, keeping map point (mx, my) under the same spot */
+  function zoomAt(nk, mx, my) {
+    nk = Math.min(Math.max(nk, 1), KMAX);
+    const fx = (mx - vx) / (W / k), fy = (my - vy) / (H / k);
+    k = nk;
+    vx = mx - fx * (W / k);
+    vy = my - fy * (H / k);
+    hideTip();
+    applyZoom();
+  }
+
+  zc.addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    const cx = vx + W / k / 2, cy = vy + H / k / 2;
+    if (b.dataset.z === "in") zoomAt(k * 1.6, cx, cy);
+    if (b.dataset.z === "out") zoomAt(k / 1.6, cx, cy);
+    if (b.dataset.z === "reset") { k = 1; vx = vy = 0; hideTip(); applyZoom(); }
+  });
+
+  let hintTimer = null;
+  svg.addEventListener("wheel", e => {
+    if (!(e.ctrlKey || e.metaKey)) {
+      hint.classList.add("show");
+      clearTimeout(hintTimer);
+      hintTimer = setTimeout(() => hint.classList.remove("show"), 1200);
+      return;                                 /* let the page scroll */
+    }
+    e.preventDefault();
+    const [mx, my] = toMap(e.clientX, e.clientY);
+    zoomAt(k * Math.exp(-e.deltaY * 0.0045), mx, my);
+  }, { passive: false });
+
+  svg.addEventListener("dblclick", e => {
+    if (e.target.closest(".bub,.hit")) return;   /* click already drills */
+    e.preventDefault();
+    const [mx, my] = toMap(e.clientX, e.clientY);
+    zoomAt(e.shiftKey ? k / 2 : k * 2, mx, my);
+  });
+
+  /* drag to pan, two pointers to pinch */
+  const ptrs = new Map();
+  let drag = null, moved = false, pinch = null;
+  svg.addEventListener("pointerdown", e => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+    moved = false;
+    if (ptrs.size === 1 && k > 1) {
+      drag = { x: e.clientX, y: e.clientY, vx, vy };
+    } else if (ptrs.size === 2) {
+      const [a, b] = [...ptrs.values()];
+      pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]), k,
+                m: toMap((a[0] + b[0]) / 2, (a[1] + b[1]) / 2) };
+      drag = null;
+    }
+  });
+  svg.addEventListener("pointermove", e => {
+    if (!ptrs.has(e.pointerId)) return;
+    ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+    if (pinch && ptrs.size === 2) {
+      const [a, b] = [...ptrs.values()];
+      const d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      zoomAt(pinch.k * d / pinch.d, pinch.m[0], pinch.m[1]);
+      moved = true;
+    } else if (drag) {
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (!moved && Math.hypot(dx, dy) < 4) return;
+      moved = true;
+      try { svg.setPointerCapture(e.pointerId); } catch (_) { /* optional */ }
+      const b = svg.getBoundingClientRect();
+      vx = drag.vx - dx / b.width * (W / k);
+      vy = drag.vy - dy / b.height * (H / k);
+      hideTip();
+      applyZoom();
+    }
+  });
+  const endPtr = e => {
+    ptrs.delete(e.pointerId);
+    if (ptrs.size < 2) pinch = null;
+    if (!ptrs.size) drag = null;
+  };
+  svg.addEventListener("pointerup", endPtr);
+  svg.addEventListener("pointercancel", endPtr);
+  /* a drag that ends on a bubble must not open its postings */
+  svg.addEventListener("click", e => {
+    if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; }
+  }, true);
+
+  applyZoom();
+
   /* ---- redraw the map and the ranking table ---- */
   let lastRows = null;
 
@@ -1354,7 +1505,15 @@ const nk = s => String(s)
     });
   }
 
+  /* Every redraw lays bubbles and labels out at zoom 1, then the
+     current zoom is re-applied on top. */
   function draw(rows) {
+    svg.style.setProperty("--k", 1);
+    drawMap(rows);
+    applyZoom();
+  }
+
+  function drawMap(rows) {
     if (rows) lastRows = rows;
     rows = lastRows || [];
 
@@ -1417,7 +1576,8 @@ const nk = s => String(s)
         /* transparent hit targets so the tooltip still works */
         spots.forEach(r => {
           const c = el("circle", { class: "hit", cx: r.x, cy: r.y,
-                                   r: Math.max(8, R(r.n_postings)) });
+                                   r: Math.max(8, R(r.n_postings)),
+                                   "data-r0": Math.max(8, R(r.n_postings)) });
           c.addEventListener("mouseenter", e => showTip(e, r));
           c.addEventListener("mousemove", moveTip);
           c.addEventListener("mouseleave", hideTip);
@@ -1428,6 +1588,7 @@ const nk = s => String(s)
         spots.forEach(r => {
           const c = el("circle", { class: "bub", cx: r.x, cy: r.y,
             r: R(r.n_postings).toFixed(2),
+            "data-r0": R(r.n_postings).toFixed(2),
             fill: CCOL[r.country] || CORAL, "fill-opacity": .7 });
           c.addEventListener("mouseenter", e => showTip(e, r));
           c.addEventListener("mousemove", moveTip);
@@ -1470,6 +1631,9 @@ const nk = s => String(s)
         t.setAttribute("x", s.x.toFixed(1));
         t.setAttribute("y", s.y.toFixed(1));
         t.setAttribute("text-anchor", s.a);
+        /* anchor and side, so zoom can move the label with its bubble */
+        t.dataset.ax = x; t.dataset.ay = y; t.dataset.rr = rr;
+        t.dataset.side = spots4.indexOf(s);
         boxes.push(s.b);
         n++;
       }

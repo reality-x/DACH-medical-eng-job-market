@@ -56,7 +56,7 @@ Note: Excluded rows land in `silver.excluded` so the decision stays auditable.
 ## Architecture of the pipeline
 
 ```
-Adzuna API              de · at · ch, 21 job titles
+Adzuna API              de · at · ch, 21 job titles   (GitHub Actions port: de · ch)
     │
     ▼
 Unity Catalog volume    raw JSON cached, one file per query
@@ -93,6 +93,21 @@ GitHub Pages            static site, no backend
 
 
 ## Running it yourself
+
+### Option 1: GitHub Actions (no Databricks)
+
+`src/pipeline.py` is a single-process port of notebooks 01-06 that writes the same `docs/data/*.json`. `.github/workflows/pipeline.yml` runs it daily at 06:00 UTC and commits the result, and GitHub Pages (serving `docs/` from `main`) picks it up.
+
+1. Get an Adzuna key and choose a plan. The free trial is 25 calls in total, which is not enough for a run; "API Access" (500 calls/day, 5,000/month) is.
+2. In the repo, go to **Settings → Secrets and variables → Actions** and add the secrets `ADZUNA_APP_ID` and `ADZUNA_APP_KEY`.
+3. **Actions → pipeline → Run workflow** for a first run. The `call_budget` input caps API calls (default 160, which fits 5,000/month).
+4. Add the repository variable `PIPELINE_ENABLED = true` to turn on the daily schedule. Optionally set `CALL_BUDGET`.
+
+Only Germany and Switzerland are queried, to fit the quota. Calls are spent breadth first: page 1 of every query before page 2 of any, so a small budget still covers every role, and German results are a sample rather than a census. `state/registry.tsv` records every posting ever seen so `new_postings_daily` keeps accumulating; `state/new_postings_seed.json` holds the frozen Databricks-era counts.
+
+The title rules in `src/classify.py` are copied from `notebooks/03_silver_clean.py`. Change both together; `tests/test_classify.py` checks them.
+
+### Option 2: Databricks
 
 1. Get an `app_id` and `app_key` from `developer.adzuna.com`.
 2. Create a Databricks workspace (Free Edition is enough) and run `notebooks/setup_uc.py` to create the catalog, schemas and volumes.

@@ -17,3 +17,4 @@ data/raw/
 
 # os
 .DS_Store
+.cache/

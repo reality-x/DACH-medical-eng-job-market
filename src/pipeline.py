@@ -1,15 +1,21 @@
-"""Daily pipeline for GitHub Actions: Adzuna -> classify -> docs/data/*.json.
+"""Pipeline for GitHub Actions: merge upstream AI/data + own SWE postings.
 
-A single-process port of notebooks 01-06. It writes the same JSON files,
-with the same fields, that the Databricks pipeline published, so the site
-does not change.
+AI and data postings come from the upstream tracker's published
+postings.json (Chrisinho8/DACH-data-job-market, MIT), which refreshes
+daily and costs no Adzuna calls. Software engineering postings come from
+our own Adzuna queries, stored in state/swe_postings.json and refreshed
+only when a run has a call budget. Every aggregate is rebuilt from the
+merged rows, in the same JSON shapes the site reads.
 
-    python src/pipeline.py                      # live run, uses the API
-    python src/pipeline.py --raw-dir some/dir   # replay cached responses
+    CALL_BUDGET=0  python src/pipeline.py   # merge only, no API calls
+    CALL_BUDGET=25 python src/pipeline.py   # also refresh SWE postings
+    python src/pipeline.py --raw-dir DIR    # replay cached SWE responses
 
 Environment:
-    ADZUNA_APP_ID, ADZUNA_APP_KEY   required for a live run
-    CALL_BUDGET                     hard cap on API calls (default 160)
+    ADZUNA_APP_ID, ADZUNA_APP_KEY   needed only when CALL_BUDGET > 0
+    CALL_BUDGET                     hard cap on API calls (default 25)
+    UPSTREAM_DATA                   base URL of the upstream docs/data
+    CALL_PACE                       seconds between calls (default 13)
 """
 
 import argparse
@@ -39,15 +45,18 @@ STATE = ROOT / "state"
 
 BASE = "https://api.adzuna.com/v1/api/jobs"
 
-# Austria was dropped to fit the API quota (500 calls/day, 5,000/month).
+# Austria was dropped to fit the API quota; upstream AT rows are
+# dropped too, so every country carries every role group.
 COUNTRIES = ["de", "ch"]
 
+UPSTREAM = os.environ.get(
+    "UPSTREAM_DATA",
+    "https://raw.githubusercontent.com/Chrisinho8/DACH-data-job-market/"
+    "main/docs/data")
+
+# Only software engineering is queried; AI and data come from upstream.
+# 9 queries x 2 countries = 18 calls for page 1 of everything.
 ROLES = [
-    "data engineer", "data analyst", "data scientist",
-    "analytics engineer", "bi developer", "machine learning engineer",
-    "ai engineer", "data architect", "etl developer", "big data engineer",
-    "mlops engineer", "data warehouse",
-    # software engineering
     "software engineer", "softwareentwickler", "backend developer",
     "frontend developer", "fullstack developer", "mobile developer",
     "devops engineer", "cloud engineer", "site reliability engineer",
@@ -56,7 +65,9 @@ ROLES = [
 PER_PAGE = 50
 MAX_PAGES = 45
 MAX_AGE_DAYS = 365
-PACE = 2.5             # seconds between calls; Adzuna allows ~25/minute
+# Seconds between calls. Adzuna's free tier allows 5 calls/minute, so the
+# default stays under that; set CALL_PACE lower on a paid plan.
+PACE = float(os.environ.get("CALL_PACE", 13))
 RETRIES = 6
 STALE_MIN_POSTINGS = 5
 FAMILY_MIN = 50        # skill tables skip thinner families
@@ -148,7 +159,9 @@ class Fetcher:
                     return {"results": [], "count": 0}
                 if e.code not in (429, 500, 502, 503, 504):
                     raise
-                wait = min(60, 2 ** attempt) * (0.5 + random.random())
+                # a 429 means the per-minute window is full: wait it out
+                wait = (65 if e.code == 429
+                        else min(60, 2 ** attempt) * (0.5 + random.random()))
                 print(f"  HTTP {e.code}, sleeping {wait:.0f}s")
                 time.sleep(wait)
             except (urllib.error.URLError, TimeoutError) as e:
@@ -238,6 +251,7 @@ def parse(x, today):
         "salary_min": num("salary_min"),
         "salary_max": num("salary_max"),
         "desc_truncated": desc.endswith("…"),
+        "salary_known": True,
         "url": x.get("redirect_url") or None,
         "text": f"{title} . {desc}",
     }
@@ -365,7 +379,11 @@ def gold(P, today):
             "pct_over_60d": pct(rows, lambda r: r["age_days"] > 60),
             "pct_over_90d": pct(rows, lambda r: r["age_days"] > 90),
             "pct_english": pct(rows, lambda r: r["language"] == "en"),
-            "pct_with_salary": pct(rows, lambda r: r["salary_min"] is not None),
+            # only over rows fetched from Adzuna; upstream rows carry no
+            # salary field, which is unknown rather than absent
+            "pct_with_salary": pct(
+                [r for r in rows if r.get("salary_known", True)],
+                lambda r: r["salary_min"] is not None),
             "pct_agency": pct(rows, lambda r: r["is_agency"])})
     out["country_breakdown"] = sorted(cb, key=lambda x: -x["n_postings"])
 
@@ -532,16 +550,112 @@ def write(name, obj, compact=False):
     print(f"  wrote {name}.json ({len(body) / 1024:.1f} KB)")
 
 
+def fetch_json(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "dach-jobs-pipeline"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return json.loads(r.read().decode())
+
+
+def from_public(r, today):
+    """A published postings.json row -> the internal record gold() uses."""
+    cd = dt.date.fromisoformat(r["created_date"][:10])
+    return {
+        "posting_id": r["posting_id"], "title": r["title"],
+        "company": r["company"], "city": r["city"], "country": r["country"],
+        "role_family": r["role_family"], "role_group": r["role_group"],
+        "seniority": r["seniority"], "language": r["language"],
+        "is_agency": r["is_agency"], "created": r["created_date"],
+        "created_date": cd, "age_days": (today - cd).days,
+        # not in the public file: salary is unknown, not absent
+        "salary_min": None, "salary_max": None, "desc_truncated": None,
+        "salary_known": False,
+        "url": r["url"], "skills": r.get("skills") or [],
+    }
+
+
+def to_public(r):
+    return {**{k: r[k] for k in (
+        "posting_id", "title", "company", "city", "country", "role_group",
+        "role_family", "seniority", "language", "is_agency", "url",
+        "skills", "salary_min", "salary_max", "desc_truncated")},
+        "created_date": iso(r["created_date"])}
+
+
+def upstream_rows(today):
+    rows = fetch_json(f"{UPSTREAM}/postings.json")
+    meta = fetch_json(f"{UPSTREAM}/meta.json")
+    keep = [from_public(r, today) for r in rows
+            if r["country"] in COUNTRIES
+            and r["role_group"] in ("data", "ai")
+            and r.get("url")]
+    print(f"upstream: {len(keep):,} AI/data postings "
+          f"(of {len(rows):,}, published {meta.get('updated')})")
+    return keep, meta.get("updated")
+
+
+def swe_rows(args, today):
+    """Fresh SWE postings when there is a call budget, else the last
+    stored snapshot with ages moved forward to today."""
+    path = STATE / "swe_postings.json"
+    budget = int(os.environ.get("CALL_BUDGET", 25))
+    calls, n_quar, fetched = 0, 0, None
+
+    if args.raw_dir or budget > 0:
+        if args.raw_dir:
+            raw = load_raw_dir(args.raw_dir)
+        else:
+            app_id = os.environ.get("ADZUNA_APP_ID")
+            app_key = os.environ.get("ADZUNA_APP_KEY")
+            if not app_id or not app_key:
+                sys.exit("ADZUNA_APP_ID and ADZUNA_APP_KEY must be set "
+                         "when CALL_BUDGET > 0")
+            f = Fetcher(app_id, app_key, budget,
+                        args.cache_dir / today.isoformat())
+            raw = fetch_all(f)
+            calls = f.calls
+        clean, n_quar = silver(raw, today)
+        swe = [r for r in clean if r["role_group"] == "software"]
+        assert len(swe) >= args.min_swe, \
+            f"only {len(swe)} SWE postings, keeping the previous snapshot"
+        STATE.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps({
+            "fetched": today.isoformat(), "api_calls": calls,
+            "quarantined": n_quar,
+            "postings": [to_public(r) for r in swe]},
+            ensure_ascii=False, separators=(",", ":")))
+        fetched = today.isoformat()
+        print(f"SWE snapshot refreshed: {len(swe):,} postings")
+    elif path.exists():
+        snap = json.loads(path.read_text())
+        swe = []
+        for r in snap["postings"]:
+            x = from_public(r, today)
+            x.update(salary_known=True,
+                     salary_min=r.get("salary_min"),
+                     salary_max=r.get("salary_max"),
+                     desc_truncated=r.get("desc_truncated"))
+            swe.append(x)
+        swe = [r for r in swe if r["age_days"] <= MAX_AGE_DAYS]
+        fetched, n_quar = snap["fetched"], snap.get("quarantined", 0)
+        print(f"SWE snapshot reused from {fetched}: {len(swe):,} postings")
+    else:
+        swe = []
+        print("no SWE snapshot yet; run with CALL_BUDGET > 0 to create one")
+    return swe, fetched, calls, n_quar
+
+
 def main():
     global OUT, STATE
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw-dir", type=pathlib.Path,
-                    help="replay cached API responses instead of calling")
+                    help="replay cached SWE API responses instead of calling")
     ap.add_argument("--cache-dir", type=pathlib.Path,
                     default=ROOT / ".cache" / "raw",
                     help="where live responses are saved")
     ap.add_argument("--min-postings", type=int,
                     default=int(os.environ.get("MIN_POSTINGS", 500)))
+    ap.add_argument("--min-swe", type=int,
+                    default=int(os.environ.get("MIN_SWE", 100)))
     ap.add_argument("--out-dir", type=pathlib.Path, default=OUT)
     ap.add_argument("--state-dir", type=pathlib.Path, default=STATE)
     ap.add_argument("--today", type=dt.date.fromisoformat,
@@ -550,28 +664,19 @@ def main():
     today = args.today
     OUT, STATE = args.out_dir, args.state_dir
 
-    if args.raw_dir:
-        raw = load_raw_dir(args.raw_dir)
-        calls = 0
-    else:
-        app_id = os.environ.get("ADZUNA_APP_ID")
-        app_key = os.environ.get("ADZUNA_APP_KEY")
-        if not app_id or not app_key:
-            sys.exit("ADZUNA_APP_ID and ADZUNA_APP_KEY must be set")
-        f = Fetcher(app_id, app_key,
-                    int(os.environ.get("CALL_BUDGET", 160)),
-                    args.cache_dir / today.isoformat())
-        raw = fetch_all(f)
-        calls = f.calls
+    up, up_date = upstream_rows(today)
+    swe, swe_date, calls, n_quar = swe_rows(args, today)
 
-    P, n_quar = silver(raw, today)
+    merged = {}
+    for r in up + swe:
+        merged.setdefault(r["posting_id"], r)
+    P = [r for r in merged.values() if 0 <= r["age_days"] <= MAX_AGE_DAYS]
 
     # validation gate: never overwrite the site with a broken run
     n = len(P)
     assert n >= args.min_postings, f"only {n} postings, refusing to publish"
-    assert n_quar / max(n + n_quar, 1) < 0.10, \
-        f"quarantine rate {n_quar / (n + n_quar):.1%} too high"
     assert not {r["role_family"] for r in P} & {"ai (other)", "embedded / qa"}
+    assert all(r["role_family"] in C.KEEP for r in P)
 
     g = gold(P, today)
     assert len(g["postings"]) >= args.min_postings, "too few linkable postings"
@@ -586,6 +691,7 @@ def main():
         write(name, obj, compact=(name == "postings"))
 
     ms = g["market_summary"][0]
+    trunc = [r["desc_truncated"] for r in P if r["desc_truncated"] is not None]
     write("meta", {
         "updated": today.isoformat(),
         "live_postings": ms["live_postings"],
@@ -594,13 +700,16 @@ def main():
         "median_age_days": float(ms["median_age_days"]),
         "pct_over_60d": ms["pct_over_60d"],
         "quarantined": n_quar,
-        "quarantine_rate": round(n_quar / max(n + n_quar, 1), 4),
+        "quarantine_rate": round(n_quar / max(len(swe) + n_quar, 1), 4),
         "postings_published": len(g["postings"]),
         "matcher_precision": None,
         "matcher_recall": None,
-        "desc_truncated_pct": r1(100 * sum(r["desc_truncated"] for r in P) / n),
+        "desc_truncated_pct": r1(100 * sum(trunc) / len(trunc)) if trunc else None,
         "api_calls": calls,
         "countries": COUNTRIES,
+        "upstream_updated": up_date,
+        "swe_updated": swe_date,
+        "swe_postings": len(swe),
     })
 
 

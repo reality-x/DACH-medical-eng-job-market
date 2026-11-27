@@ -82,3 +82,18 @@ def test_gold_shapes_and_rounding():
 def test_half_up_rounding_matches_spark():
     assert PL.r1(0.25) == 0.3
     assert PL.r1(2.45) == 2.5
+
+
+def test_public_roundtrip_keeps_fields_and_moves_age_forward():
+    clean, _ = PL.silver([raw("Backend Developer")], TODAY)
+    pub = PL.to_public(clean[0])
+    later = PL.from_public(pub, TODAY + dt.timedelta(days=10))
+    assert later["age_days"] == clean[0]["age_days"] + 10
+    assert later["role_group"] == "software"
+    assert later["skills"] == clean[0]["skills"]
+
+
+def test_only_software_roles_are_queried():
+    # AI and data come from upstream; spending calls on them is waste
+    assert len(PL.ROLES) == 9
+    assert len(PL.COUNTRIES) * len(PL.ROLES) <= 25 - 5   # room for page 2

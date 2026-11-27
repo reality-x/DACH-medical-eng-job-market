@@ -5,13 +5,12 @@ const CORAL = "#E56743", CLAY = "#D07B55", SAGE = "#6FA37F",
       PLUM  = "#9C6B9E", STEEL = "#5C87A8", MOSS = "#5F977F",
       SAND  = "#CBA55F";
 
-/* Splitting AI into families took the role count from 10 to 15, so a
-   10-colour cycle would have repeated. Six more, chosen to stay
-   distinguishable in the same muted range.                         */
+/* 15 published families need more than a 10-colour cycle, so six
+   more, chosen to stay distinguishable in the same muted range.   */
 const ROSE = "#BE5B7E", INDIGO = "#6A6DB0", OLIVE = "#93A04B",
       OCEAN = "#3E7E96", STONE = "#8A857C", RUST  = "#A55A33";
 
-/* Software engineering families: a third, greener/bluer block. */
+/* a third, greener/bluer block */
 const SKY = "#6FA8C9", NAVY = "#3F5A7A", LIME  = "#A3B65A",
       GRAPE = "#7D5BA6", COCOA = "#7A5C48", MINT = "#5FB3A0";
 
@@ -20,114 +19,105 @@ const CATS = [CORAL, STEEL, SAGE, AMBER, PLUM, TEAL,
               ROSE, INDIGO, OLIVE, OCEAN, STONE, RUST,
               SKY, NAVY, LIME, GRAPE, COCOA, MINT];
 
-/* Fixed colour per role, so a role keeps its colour across
-   every chart on the page even when the sort order differs. The AI
-   families share the warm end of the palette and the data families
-   the cool end, which makes the AI block readable as a block.     */
+/* Fixed colour per role, so a role keeps its colour across every
+   chart on the page even when the sort order differs. Regulatory
+   families take the warm end of the palette, MedTech the cool
+   blues, Digital Health the greens, so each group reads as a block. */
 const ROLE_COLOUR = {
-  "ai engineer":   CORAL,  "genai / llm":   DEEP,
-  "ml engineer":   CLAY,   "mlops":         RUST,
-  "ai consultant": AMBER,  "ai research":   SAND,
-  "ai / ml":       CORAL,          /* pre-split snapshots */
+  "ra manager":        CORAL,  "ra specialist":      AMBER,
+  "qa / ra":           DEEP,   "clinical affairs":   SAND,
+  "quality management": RUST,
 
-  "data engineer":      STEEL,  "data analyst":    SAGE,
-  "data scientist":     TEAL,   "data architect":  INDIGO,
-  "analytics engineer": MOSS,   "dwh / etl":       OCEAN,
-  "data governance":    PLUM,   "data consultant": OLIVE,
-  "bi developer":       ROSE,
+  "medtech r&d":       STEEL,  "medtech software":   INDIGO,
+  "medtech product":   PLUM,   "medtech sales":      ROSE,
+  "medtech service":   OCEAN,  "medtech production": STONE,
 
-  "software engineer":  NAVY,   "backend engineer":  SKY,
-  "frontend engineer":  LIME,   "fullstack engineer": MINT,
-  "mobile engineer":    GRAPE,  "devops / cloud":    COCOA
+  "digital health engineer":   SAGE,  "digital health product": MINT,
+  "health it":                 TEAL,  "digital health consulting": OLIVE
 };
+
+/* role group per published family */
+const GROUP_OF = {};
+[["regulatory", ["ra manager", "ra specialist", "qa / ra",
+                 "clinical affairs", "quality management"]],
+ ["medtech", ["medtech r&d", "medtech software", "medtech product",
+              "medtech sales", "medtech service", "medtech production"]],
+ ["digital health", ["digital health engineer", "digital health product",
+                     "health it", "digital health consulting"]]
+].forEach(([g, fs]) => fs.forEach(f => GROUP_OF[f] = g));
+const GROUPS = [["regulatory", "Regulatory Affairs", CORAL],
+                ["medtech", "MedTech", STEEL],
+                ["digital health", "Digital Health", SAGE]];
+const groupOf = rf => GROUP_OF[String(rf).toLowerCase()] || "other";
 
 /* falls back to the cycle for any family the map has not seen */
 const rcol = (rf, i) =>
   ROLE_COLOUR[String(rf).toLowerCase()] || CATS[i % CATS.length];
 
-/* The six published AI families, plus two names that only appear in
-   older data/ snapshots: "ai / ml" from before the split, and
-   "ai (other)" from the window when the vague bucket was still
-   published. Both are kept so an old snapshot still totals correctly.
-   Anything asking "how much of this is AI" must sum this set, never
-   test one string.                                                */
-const AI_SET = new Set([
-  "ai engineer", "genai / llm", "ml engineer", "mlops",
-  "ai consultant", "ai research",
-  "ai / ml", "ai (other)"        /* legacy snapshots only */
-]);
-const isAI = rf => AI_SET.has(String(rf).toLowerCase());
+/* The regulatory families. Anything asking "how much of this is
+   regulatory affairs" must sum this set, never test one string.    */
+const RA_SET = new Set(Object.keys(GROUP_OF)
+  .filter(f => GROUP_OF[f] === "regulatory"));
+const isRA = rf => RA_SET.has(String(rf).toLowerCase());
 
 /* Families the pipeline no longer publishes. A current data/ refresh
    contains none of these; they are filtered out rather than trusted to
    be absent, so an old JSON file cannot resurrect a chart series the
    surrounding copy no longer explains.                             */
-const RETIRED = new Set(["ai (other)", "ai / ml"]);
+const RETIRED = new Set([]);
 const isLive  = rf => !RETIRED.has(String(rf).toLowerCase());
 const live    = rows => rows.filter(r => isLive(r.role_family));
 
 /* Tool categories are published as snake_case identifiers. Rewrite
    them for display only; the pipeline values must not change.     */
 const SKILL_CAT_LABEL = {
-  ml_framework: "ML frameworks",
-  mlops:        "MLOps",
-  genai:        "Generative AI",
-  nlp_cv:       "NLP / computer vision",
-  language:     "Languages",
-  processing:   "Processing",
-  streaming:    "Streaming",
-  warehouse:    "Warehouse",
-  orchestr:     "Orchestration",
-  transform:    "Transformation",
-  database:     "Databases",
-  cloud:        "Cloud",
-  devops:       "DevOps",
-  bi:           "BI",
-  platform:     "Platform",
-  enterprise:   "Enterprise",
-  practice:     "Practices",
-  frontend:     "Frontend",
-  backend:      "Backend",
-  mobile:       "Mobile",
-  legacy:       "Legacy"
+  regulation: "Regulations",
+  standard:   "Standards",
+  practice:   "RA / QA practices",
+  health_it:  "Health IT",
+  tool:       "Tools and languages"
 };
 const scat = c => SKILL_CAT_LABEL[c] || String(c).replace(/_/g, " ");
 
-/* Skills are published as dictionary keys ("ai_agents", "powerbi").
+/* Skills are published as dictionary keys ("iso13485", "risk_mgmt").
    Display names only; filters and searches keep the keys.          */
 const SKILL_LABEL = {
-  angular: "Angular", ansible: "Ansible", cpp: "C++", csharp: "C# / .NET",
-  django: "Django / FastAPI / Flask", flutter: "Flutter", golang: "Go",
-  kotlin: "Kotlin", nodejs: "Node.js", react: "React",
-  react_native: "React Native", rust: "Rust", spring: "Spring",
-  swift: "Swift", typescript: "TypeScript", vue: "Vue",
-  ai_agents: "AI agents", ai_eval: "AI evaluation", airflow: "Airflow",
-  aws: "AWS", azure: "Azure", azureml: "Azure ML", bigquery: "BigQuery",
-  cicd: "CI/CD", cv: "Computer vision", databricks: "Databricks",
-  datawarehouse: "Data warehousing", dbt: "dbt",
-  deeplearning: "Deep learning", docker: "Docker",
-  elastic: "Elasticsearch", etl: "ETL", excel: "Excel",
-  featurestore: "Feature stores", finetuning: "Fine-tuning",
-  flink: "Flink", gcp: "Google Cloud", genai: "GenAI", git: "Git",
-  hadoop: "Hadoop", java: "Java", javascript: "JavaScript", jax: "JAX",
-  kafka: "Kafka", kubernetes: "Kubernetes", langchain: "LangChain",
-  llm: "LLMs", looker: "Looker", mssql: "SQL Server", mysql: "MySQL",
-  nlp: "NLP", openai_api: "OpenAI API", oracle: "Oracle", php: "PHP",
-  postgres: "PostgreSQL", powerbi: "Power BI",
-  prompting: "Prompt engineering", python: "Python", pytorch: "PyTorch",
-  qlik: "Qlik", r_lang: "R", rag: "RAG", redshift: "Redshift",
-  sagemaker: "SageMaker", sap: "SAP", sklearn: "scikit-learn",
-  snowflake: "Snowflake", spark: "Spark", sql: "SQL", ssis: "SSIS",
-  synapse: "Synapse", tableau: "Tableau", tensorflow: "TensorFlow",
-  terraform: "Terraform", vectordb: "Vector databases",
-  vertexai: "Vertex AI", mlflow: "MLflow", bentoml: "BentoML",
-  keras: "Keras", wandb: "Weights & Biases", kubeflow: "Kubeflow"
+  mdr: "EU MDR", ivdr: "IVDR", mdd: "MDD", fda: "FDA (510(k), PMA)",
+  qmsr: "21 CFR 820 / QMSR", mdsap: "MDSAP", ce_marking: "CE marking",
+  notified_body: "Notified bodies", swissmedic: "Swissmedic / MepV",
+  ukca: "UKCA / MHRA", diga: "DiGA / DiPA", gdpr: "GDPR / DSGVO",
+  ai_act: "EU AI Act", gmp: "GMP",
+  iso13485: "ISO 13485", iso14971: "ISO 14971", iec62304: "IEC 62304",
+  iec60601: "IEC 60601", iec62366: "IEC 62366", iso10993: "ISO 10993",
+  iso14155: "ISO 14155", iec82304: "IEC 82304", iec81001: "IEC 81001-5-1",
+  iso27001: "ISO 27001", iso9001: "ISO 9001",
+  risk_mgmt: "Risk management", tech_doc: "Technical documentation",
+  clinical_eval: "Clinical evaluation", pms: "Post-market surveillance",
+  vigilance: "Vigilance / complaints", capa: "CAPA",
+  design_control: "Design controls", validation: "Verification & validation",
+  audits: "Audits", usability: "Usability engineering",
+  cybersecurity: "Cybersecurity", submissions: "Submissions / market access",
+  udi: "UDI / EUDAMED", qms: "QMS", sop: "SOPs",
+  reimbursement: "Reimbursement / HTA",
+  hl7: "HL7", fhir: "FHIR", dicom: "DICOM / PACS", ihe: "IHE",
+  telematik: "Telematik / ePA", kis: "KIS / EHR", samd: "SaMD",
+  python: "Python", cpp: "C++", csharp: "C# / .NET", java: "Java",
+  matlab: "MATLAB / Simulink", labview: "LabVIEW", cad: "CAD",
+  alm: "ALM (Polarion, DOORS, Jama)", jira: "Jira / Confluence",
+  sap: "SAP", cloud: "Cloud (AWS, Azure, GCP)", ai_ml: "AI / ML"
 };
 const slab = k => SKILL_LABEL[k] || String(k).replace(/_/g, " ");
-/* Generative-AI skills: the "genai" category of skill_demand.json,
-   which tops this list up when it loads. */
-const GENAI = new Set(["ai_agents", "llm", "genai", "prompting", "rag",
-  "openai_api", "ai_eval", "finetuning", "langchain", "vectordb"]);
+/* Regulatory skills: regulations and standards, highlighted in coral.
+   The "regulation" and "standard" categories of skill_demand.json
+   top this list up when it loads. */
+const HILITE = new Set(["mdr", "ivdr", "mdd", "fda", "qmsr", "mdsap",
+  "ce_marking", "notified_body", "iso13485", "iso14971", "iec62304",
+  "iec60601", "iec62366", "iso10993"]);
+const HILITE_CATS = new Set(["regulation", "standard"]);
+
+/* Seniority levels the pipeline publishes. Senior, lead and head-of
+   titles are out of scope, so only these two appear.               */
+const LEVELS = ["junior", "mid"];
 
 const CNAME = { de: "Germany", at: "Austria", ch: "Switzerland" };
 /* inline SVG flags: the emoji ones do not render on Windows */
@@ -145,7 +135,8 @@ const CFLAG = {
       '<rect x="2" y="4.1" width="6" height="1.8" fill="#FFFFFF"/></svg>',
 };
 const CCOL  = { de: CORAL,     at: STEEL,     ch: SAGE };
-const CORDER = ["de", "at", "ch"];
+/* Austria is not queried; its outline stays on the map, empty. */
+const CORDER = ["de", "ch"];
 
 Chart.defaults.font.family =
   "Inter, system-ui, -apple-system, Segoe UI, sans-serif";
@@ -249,34 +240,23 @@ const cityName = s => {
    not change. Only the labels shown to a reader are rewritten, so
    nothing downstream of gold breaks.                              */
 const ROLE_LABEL = {
-  /* the seven AI families that replaced the single "ai / ml" one */
-  "ai engineer":        "AI Engineer",
-  "genai / llm":        "GenAI / LLM Engineer",
-  "ml engineer":        "ML Engineer",
-  "mlops":              "MLOps / ML Platform",
-  "ai consultant":      "AI Consulting",
-  "ai research":        "AI Research",   /* incl. applied scientist */
-  /* kept so an older data/ snapshot still renders a sane label if one
-     of these ever slips past the RETIRED filter */
-  "ai / ml":            "AI/ML (pre-split)",
-  "ai (other)":         "AI, role unspecified (retired)",
+  "ra manager":         "Regulatory Affairs Manager",
+  "ra specialist":      "Regulatory Affairs Specialist",
+  "qa / ra":            "QA / RA",
+  "clinical affairs":   "Clinical Affairs / PMS",
+  "quality management": "Quality Management (MedTech)",
 
-  "data engineer":      "Data Engineer",
-  "data scientist":     "Data Scientist",
-  "data analyst":       "Data Analyst",
-  "data architect":     "Data Architect",
-  "analytics engineer": "Analytics Engineer",
-  "dwh / etl":          "Data Warehouse / ETL",
-  "data governance":    "Data Governance and Security",
-  "data consultant":    "Data Consultant",
-  "bi developer":       "BI Developer",
+  "medtech r&d":        "MedTech R&D Engineer",
+  "medtech software":   "MedTech Software Engineer",
+  "medtech product":    "MedTech Product Manager",
+  "medtech sales":      "MedTech Sales / Application",
+  "medtech service":    "MedTech Service Technician",
+  "medtech production": "MedTech Production",
 
-  "software engineer":  "Software Engineer",
-  "backend engineer":   "Backend Engineer",
-  "frontend engineer":  "Frontend Engineer",
-  "fullstack engineer": "Fullstack Engineer",
-  "mobile engineer":    "Mobile Engineer",
-  "devops / cloud":     "DevOps / Cloud / SRE",
+  "digital health engineer":   "Digital Health Engineer",
+  "digital health product":    "Digital Health Product",
+  "health it":                 "Health IT / Interoperability",
+  "digital health consulting": "Digital Health Consulting",
   "all roles":          "All roles"
 };
 /* Chart.js clips a y-axis label once it needs more than about a
@@ -473,9 +453,7 @@ const isoWeek  = s => {
 /* Why the pipeline stopped. The gaps themselves are read off the run
    history; this list only says why one happened, so every chart can
    label it. Add an entry if it ever happens again.                 */
-const OUTAGES = [
-  { from: "2026-10-11", to: "2026-10-25", why: "account issues" }
-];
+const OUTAGES = [];
 const outageIn = (a, b) =>
   OUTAGES.find(o => a <= o.to && b >= o.from) || null;
 const noRunLabel = o => `No runs ${fRange(o.from, o.to)} · due to ${o.why}`;
@@ -592,9 +570,9 @@ get("meta").then(m => {
 
   const cards = [
     [CORAL, m.live_postings.toLocaleString(), "Live postings",
-     "Germany, Austria and Switzerland"],
+     "Germany and Switzerland"],
     [STEEL, m.employers.toLocaleString(), "Employers",
-     "advertising at least one data role"],
+     "advertising at least one role in scope"],
     [CLAY, Math.round(m.avg_age_days) + " days", "Mean days open",
      ratio ? `${ratio}× the median of ${m.median_age_days} days`
            : ""],
@@ -652,7 +630,7 @@ get("age_distribution").then(d => {
 });
 
 /* ---------------- country comparison ---------------- */
-/* AI share is not in country_breakdown, so it is summed out of
+/* Regulatory share is not in country_breakdown, so it is summed out of
    city_role_breakdown: that file's per-country totals match
    country_breakdown exactly, so the two columns agree. */
 Promise.all([get("country_breakdown"), get("city_role_breakdown")])
@@ -665,7 +643,7 @@ Promise.all([get("country_breakdown"), get("city_role_breakdown")])
     cr.forEach(r => {
       const c = r.country;
       tot[c] = (tot[c] || 0) + r.n_postings;
-      if (isAI(r.role_family)) ai[c] = (ai[c] || 0) + r.n_postings;
+      if (isRA(r.role_family)) ai[c] = (ai[c] || 0) + r.n_postings;
     });
     Object.keys(tot).forEach(c => {
       if (tot[c]) aiPct[c] = Math.round(1000 * (ai[c] || 0) / tot[c]) / 10;
@@ -686,7 +664,7 @@ Promise.all([get("country_breakdown"), get("city_role_breakdown")])
       <dl>
         <dt>Mean age</dt><dd>${Math.round(r.avg_age_days)} days</dd>
         <dt>Open &gt; 60 days</dt><dd>${r.pct_over_60d}%</dd>
-        <dt>AI roles</dt><dd>${aiPct[r.country] ?? "-"}%</dd>
+        <dt>Regulatory roles</dt><dd>${aiPct[r.country] ?? "-"}%</dd>
         <dt>In English</dt><dd>${r.pct_english}%</dd>
         <dt>Salary shown</dt><dd>${r.pct_with_salary ?? "-"}%</dd>
       </dl>
@@ -1790,7 +1768,7 @@ get("role_breakdown").then(all => {
 
   /* --- role mix by country, as an over/under-index -----------------
      A 100% stacked bar over 15 roles is unreadable and mostly restates
-     that everyone hires Data Engineers. What is actually interesting is
+     that everyone hires the same few roles. What is actually interesting is
      deviation: this cell divides a country's share of a role by the
      DACH-wide share of that role. 1.00 is "exactly normal", 2.00 is
      "twice as into this as the region", 0.50 is half.
@@ -1887,7 +1865,7 @@ get("role_breakdown").then(all => {
   }
 
   /* seniority levels, for the totals below */
-  const levels = ["junior", "mid", "senior"];
+  const levels = LEVELS;
 
   /* seniority totals */
   const sen = levels.map(lv => {
@@ -2248,7 +2226,7 @@ get("postings").then(d => {
         uniq("country").sort(),
         "All countries", c => (CNAME && CNAME[c]) || c.toUpperCase());
   pFill($p("psen"),
-        ["junior", "mid", "senior"].filter(s =>
+        LEVELS.filter(s =>
           POSTINGS.some(r => r.seniority === s)),
         "All levels");
 
@@ -2382,7 +2360,7 @@ get("skill_demand").then(d => {
       [ds("Mentions", cats.map(c => c[1]),
           cats.map((_, i) => cyc(i)))],
       false, false, false,
-      { x: "tool category", y: "postings mentioning the category" });
+      { x: "skill category", y: "postings mentioning the category" });
 
 
 });
@@ -2391,10 +2369,8 @@ get("skill_demand").then(d => {
 get("history").then(h => {
   if (!h) return;
 
-  /* Snapshots before 2026-08-08 were written while the AI split and
-     the staleness cap were still changing, so their numbers are not
-     comparable. The tracker starts on the first clean day. */
-  const MIN_DATE = "2026-08-08";
+  /* The regulatory / medtech / digital health tracker starts here. */
+  const MIN_DATE = "2026-11-27";
   h = h.filter(r => iso(r.snapshot_date) >= MIN_DATE);
 
   const rows = (m, dim) => h.filter(r => r.metric === m &&
@@ -2406,7 +2382,6 @@ get("history").then(h => {
   if (!tsec) return;
   tsec.hidden = false;
 
-  const RETIRED = new Set(["ai (other)", "ai / ml"]);
   const roles = [...new Set(h.filter(r => r.metric === "role_count"
                                        && !RETIRED.has(r.dimension))
       .map(r => r.dimension))]
@@ -2644,8 +2619,8 @@ get("history").then(h => {
 
     /* 3. seniority mix by country */
     if (d[0].country !== undefined) {
-      const levels = ["junior", "mid", "senior"];
-      const cols   = { junior: SAGE, mid: STEEL, senior: CORAL };
+      const levels = LEVELS;
+      const cols   = { junior: SAGE, mid: STEEL };
       const tot = {};
       d.forEach(r => tot[r.country] = (tot[r.country] || 0) + r.n_postings);
       const cs = CORDER.filter(c => tot[c]);
@@ -2716,13 +2691,11 @@ get("history").then(h => {
       ["Descriptions truncated",
        m.desc_truncated_pct != null
          ? m.desc_truncated_pct + "%" : "-"],
-      /* Not per-run. One-off manual spot check on a hand-labelled
-         sample; the pipeline does not recompute these. Hardcoded on
-         purpose so they are never mistaken for a live metric. */
-      ["Matcher precision (spot check)",
-       m.matcher_precision ?? "0.93"],
-      ["Matcher recall (spot check)",
-       m.matcher_recall ?? "0.89"],
+      ["Postings published",
+       m.postings_published != null
+         ? m.postings_published.toLocaleString() : "-"],
+      ["Snapshot fetched",
+       m.snapshot_updated ? euroDate(m.snapshot_updated) : "-"],
     ];
 
     el.innerHTML = cards.map(([k, v]) =>
@@ -2765,7 +2738,7 @@ get("history").then(h => {
     scales: {
       x: { grid: { color: LINE }, title: { display: true, text: fmtLabel } },
       y: { grid: { display: false },
-           title: { display: true, text: "tool" } }
+           title: { display: true, text: "skill" } }
     }
   });
 
@@ -2979,7 +2952,7 @@ get("history").then(h => {
         },
         scales: {
           x: { title: { display: true,
-                        text: "% of postings mentioning the tool" },
+                        text: "% of postings mentioning the skill" },
                grid: { color: LINE }, beginAtZero: true },
           y: { title: { display: true, text: "average days open" },
                grid: { color: LINE } }
@@ -3033,17 +3006,9 @@ get("history").then(h => {
       const hasRoles =
         !!(cr && cr.length && cr[0].role_family !== undefined && selR);
 
-      /* ---- totals and AI share per city, from the role cut ----
-         AI is six families, so this sums the set rather than testing
-         one string. AI_SET is defined once at the top. Retired
-         families are stripped first, so an old data/ snapshot cannot
-         quietly inflate a city's AI share with rows the rest of the
-         page no longer counts.
-
-         One axis, not two. There used to be a second "role named"
-         share because the vague bucket was published alongside the
-         named ones; now nothing vague is published and the two
-         numbers would be identical.                              */
+      /* ---- totals and regulatory share per city, from the role cut ----
+         Regulatory affairs is five families, so this sums the set
+         rather than testing one string. RA_SET is defined at the top. */
       const crLive = (cr && cr.length) ? live(cr) : [];
       const cityTotal = {}, aiShare = {};
       if (crLive.length && crLive[0].role_family !== undefined) {
@@ -3052,7 +3017,7 @@ get("history").then(h => {
           const k = `${r.country}|${r.city}`;
           const rf = String(r.role_family).toLowerCase();
           cityTotal[k] = (cityTotal[k] || 0) + r.n_postings;
-          if (AI_SET.has(rf)) ai[k] = (ai[k] || 0) + r.n_postings;
+          if (RA_SET.has(rf)) ai[k] = (ai[k] || 0) + r.n_postings;
         });
         Object.keys(cityTotal).forEach(k => {
           aiShare[k] = +(100 * (ai[k] || 0) / cityTotal[k]).toFixed(1);
@@ -3116,7 +3081,7 @@ get("history").then(h => {
         ["Avg days open",   "age",      v => Math.round(v) + " d"],
         ["% in English",    "english",  v => v + "%"],
         ["% via agency",    "agency",   v => v + "%"],
-        ["% AI roles",      "ai",       v => v + "%"]
+        ["% regulatory",    "ai",       v => v + "%"]
       ];
       const AX_ROLE = [
         ["Live listings", "listings", v => v.toLocaleString()],
@@ -3406,7 +3371,7 @@ get("history").then(h => {
     const roles = Object.keys(roleTot)
       .sort((a, b) => roleTot[b] - roleTot[a]);
 
-    const SORDER = ["junior", "mid", "senior"];
+    const SORDER = LEVELS;
     const sens = [...new Set(rows.map(r => r.seniority))].filter(Boolean);
     const senList = SORDER.filter(s => sens.includes(s))
       .concat(sens.filter(s => !SORDER.includes(s)).sort());
@@ -3639,7 +3604,7 @@ get("history").then(h => {
 
 /* ===================================================== */
 /* ===== Small charts shared by the role profiles, ===== */
-/* ===== the AI vocabulary and the run calendar    ===== */
+/* ===== the skill vocabulary and the run calendar ===== */
 /* ===================================================== */
 
 /* the dark map tooltip, reused */
@@ -3729,8 +3694,8 @@ function initRoleProfiles() {
   if (!sec || !POSTINGS.length) return;
   const $ = id => document.getElementById(id);
   const all = POSTINGS, N = all.length;
-  const SENS = ["junior", "mid", "senior"];
-  const SENL = { junior: "Junior", mid: "Mid-level", senior: "Senior" };
+  const SENS = LEVELS;
+  const SENL = { junior: "Junior", mid: "Mid-level" };
 
   /* market-wide figures for the comparison ticks */
   const share = (rs, f) => rs.length ? 100 * rs.filter(f).length / rs.length : 0;
@@ -3783,9 +3748,10 @@ function initRoleProfiles() {
     };
   }
 
-  /* chips: data roles, then AI roles, biggest first */
-  $("rp-chips").innerHTML = [["Data roles", r => !isAI(r)],
-                             ["AI roles", r => isAI(r)]].map(([lab, f]) =>
+  /* chips: one row per role group, biggest first */
+  $("rp-chips").innerHTML = GROUPS.map(([g, lab]) =>
+    [lab, r => groupOf(r) === g]).filter(([, f]) => roles.some(f))
+    .map(([lab, f]) =>
     `<div class="rp-chiprow"><span class="lab">${lab}</span>` +
     roles.filter(f).map(rf =>
       `<button type="button" class="chip" data-rf="${esc(rf)}"
@@ -3808,11 +3774,12 @@ function initRoleProfiles() {
 
   function draw() {
     const x = stats(cur), col = rcol(cur, 0), name = rlab(cur);
-    const ai = isAI(cur);
+    const grp = GROUPS.find(g => g[0] === groupOf(cur)) ||
+                ["other", "Other", SLATE];
     $("rp-chips").querySelectorAll("button").forEach(b =>
       b.setAttribute("aria-pressed", String(b.dataset.rf === cur)));
-    $("rp-tag").textContent = ai ? "AI role" : "Data role";
-    $("rp-tag").style.background = ai ? CORAL : STEEL;
+    $("rp-tag").textContent = grp[1];
+    $("rp-tag").style.background = grp[2];
     $("rp-name").textContent = name;
     $("rp-posts").textContent = `See all ${nf(x.n)} ${name} postings ↓`;
 
@@ -3876,7 +3843,7 @@ function initRoleProfiles() {
     hbars($("rp-skills"), x.skills.slice(0, 8).map(([k, v]) => {
       const p = 100 * v / x.n, m = 100 * (mSk[k] || 0) / N;
       return {
-        label: slab(k), v: p, m, color: GENAI.has(k) ? CORAL : STEEL,
+        label: slab(k), v: p, m, color: HILITE.has(k) ? CORAL : STEEL,
         val: pct1(p),
         tip: `<b>${esc(slab(k))}</b><em>${pct1(p)}</em> of ${esc(name)} ` +
              `postings (${nf(v)})<br>All postings: ${pct1(m)}` +
@@ -3890,21 +3857,21 @@ function initRoleProfiles() {
 
   sec.hidden = false;
   draw();
-  /* the GenAI set may grow once skill_demand.json is in */
+  /* the highlight set may grow once skill_demand.json is in */
   get("skill_demand").then(sd => {
-    (sd || []).forEach(r => { if (r.skill_category === "genai") GENAI.add(r.skill); });
+    (sd || []).forEach(r => { if (HILITE_CATS.has(r.skill_category)) HILITE.add(r.skill); });
     draw();
   });
 }
 
 
-/* ---------------- AI vocabulary ----------------
-   Top 15 skills, generative-AI ones in coral.                     */
+/* ---------------- skill vocabulary ----------------
+   Top 15 skills, regulations and standards in coral.              */
 get("skill_demand").then(sd => {
   const sec = document.getElementById("vocab-section");
   if (!sec || !Array.isArray(sd) || !sd.length) return;
-  sd.forEach(r => { if (r.skill_category === "genai") GENAI.add(r.skill); });
-  const isG = r => GENAI.has(r.skill);
+  sd.forEach(r => { if (HILITE_CATS.has(r.skill_category)) HILITE.add(r.skill); });
+  const isG = r => HILITE.has(r.skill);
   const top = sd.slice().sort((a, b) =>
     b.pct_postings - a.pct_postings || b.n_postings - a.n_postings)
     .slice(0, 15);
@@ -3916,7 +3883,7 @@ get("skill_demand").then(sd => {
     color: isG(r) ? CORAL : STEEL, val: r.pct_postings.toFixed(1) + "%",
     tip: `<b>${esc(slab(r.skill))}</b><em>${r.pct_postings}%</em> of ` +
          `postings (${nf(r.n_postings)})` +
-         (isG(r) ? "<br>Generative-AI skill" : "")
+         (isG(r) ? "<br>Regulation or standard" : "")
   }));
   const half = Math.ceil(rows.length / 2);
   hbars(document.getElementById("vocab-a"), rows.slice(0, half),

@@ -7,98 +7,94 @@ sys.path.insert(0, str(pathlib.Path(__file__).parent.parent / "src"))
 
 import classify as C
 
-# Same cases as the in-notebook check in notebooks/03_silver_clean.py.
+MED = "Wir entwickeln Medizinprodukte nach ISO 13485 für Kliniken."
+DH = "Unsere DiGA hilft Patienten digital; wir sind ein Digital-Health-Startup."
+NONE = "Wir sind ein mittelständisches Unternehmen im Maschinenbau."
+
+# (title, description, expected family)
 CASES = [
-    ("Machine Learning Engineer (m/w/d)",    "ml engineer"),
-    ("Senior ML Engineer - Computer Vision", "ml engineer"),
-    ("Deep Learning Engineer",               "ml engineer"),
-    ("NLP Engineer",                         "ml engineer"),
-    ("MLOps Engineer",                       "mlops"),
-    ("ML Platform Engineer (f/m/x)",         "mlops"),
-    ("Model Deployment Engineer",            "mlops"),
-    ("GenAI Engineer",                       "genai / llm"),
-    ("LLM Engineer / RAG Specialist",        "genai / llm"),
-    ("Prompt Engineer (Remote)",             "genai / llm"),
-    ("Agentic AI Developer",                 "genai / llm"),
-    ("Generative KI Spezialist",             "genai / llm"),
-    ("Applied Scientist, Machine Learning",  "ai research"),
-    ("AI Research Engineer",                 "ai research"),
-    ("Research Scientist Deep Learning",     "ai research"),
-    ("AI Consultant (m/w/d)",                "ai consultant"),
-    ("KI-Berater Digitalisierung",           "ai consultant"),
-    ("AI Solution Architect",                "ai consultant"),
-    ("AI Product Manager",                   "ai consultant"),
-    ("AI Engineer",                          "ai engineer"),
-    ("KI-Entwickler (m/w/d)",                "ai engineer"),
-    ("Artificial Intelligence Engineer",     "ai engineer"),
-    ("AI Specialist",                        "ai engineer"),
-    # the vague bucket: these are the ones that used to inflate ai / ml
-    ("Projektmanager KI",                    "ai (other)"),
-    # software roles that mention AI count as the role they name
-    ("Software Engineer with AI focus",      "software engineer"),
-    ("Fullstack Developer (AI Startup)",     "fullstack engineer"),
-    # software engineering
-    ("Senior Software Engineer (m/w/d)",     "software engineer"),
-    ("Softwareentwickler C++ (m/w/d)",       "software engineer"),
-    ("Anwendungsentwickler Java",            "backend engineer"),
-    ("Java Developer",                       "backend engineer"),
-    ("Backend Engineer Go",                  "backend engineer"),
-    ("Python Entwickler (m/w/d)",            "backend engineer"),
-    (".NET Developer",                       "backend engineer"),
-    ("Frontend Developer React",             "frontend engineer"),
-    ("Angular Entwickler",                   "frontend engineer"),
-    ("Webentwickler (m/w/d)",                "frontend engineer"),
-    ("JavaScript Developer",                 "frontend engineer"),
-    ("Full-Stack Engineer TypeScript",       "fullstack engineer"),
-    ("iOS Developer",                        "mobile engineer"),
-    ("Android Software Engineer",            "mobile engineer"),
-    ("App-Entwickler Flutter",               "mobile engineer"),
-    ("DevOps Engineer",                      "devops / cloud"),
-    ("Site Reliability Engineer",            "devops / cloud"),
-    ("Cloud Engineer AWS",                   "devops / cloud"),
-    ("Platform Engineer Kubernetes",         "devops / cloud"),
-    ("Cloud Architekt Azure",                "devops / cloud"),
-    # out of scope software
-    ("Embedded Software Engineer",           "embedded / qa"),
-    ("Firmware Entwickler",                  "embedded / qa"),
-    ("QA Engineer",                          "embedded / qa"),
-    ("Software Tester",                      "embedded / qa"),
-    # data and AI still beat software
-    ("Data Platform Engineer",               "data engineer"),
-    ("AI Software Engineer",                 "ai engineer"),
-    ("ML Platform Engineer",                 "mlops"),
-    ("Werkstudent Softwareentwicklung",      "entry programme"),
-    # data still beats AI
-    ("Data & AI Consultant",                 "data consultant"),
-    ("Data Engineer AI Platform",            "data engineer"),
-    ("Data Scientist NLP",                   "data scientist"),
-    ("Senior Data Analyst",                  "data analyst"),
-    ("Business Intelligence Developer",      "bi developer"),
-    ("Analytics Engineer",                   "analytics engineer"),
-    # excludes still beat everything
-    ("Werkstudent AI Engineering",           "entry programme"),
-    ("Controlling Specialist AI",            "finance"),
-    ("Rechenzentrum Techniker",              "data centre"),
-    ("Versicherungsagent",                   "other"),
+    # regulatory affairs: the title is enough
+    ("Regulatory Affairs Manager (m/w/d)",             NONE, "ra manager"),
+    ("Manager Regulatory Affairs EMEA",                NONE, "ra manager"),
+    ("Regulatory Affairs Specialist",                  NONE, "ra specialist"),
+    ("Regulatory Affairs Specialist (w/m/d)",          NONE, "ra specialist"),
+    ("Referent Zulassung (m/w/d)",                     NONE, "ra specialist"),
+    ("PRRC gemäß MDR Art. 15",                         NONE, "ra specialist"),
+    ("QA/RA Manager",                                  NONE, "qa / ra"),
+    ("Quality & Regulatory Affairs Specialist",        NONE, "qa / ra"),
+    ("QM/RA Beauftragter",                             NONE, "qa / ra"),
+    ("Clinical Affairs Manager",                       NONE, "clinical affairs"),
+    ("Post-Market Surveillance Specialist",            NONE, "clinical affairs"),
+    ("Medical Writer Clinical Evaluation",             NONE, "clinical affairs"),
+    # quality needs a medical-device signal
+    ("Qualitätsmanager (m/w/d)",                       MED,  "quality management"),
+    ("Quality Engineer Medical Devices",               NONE, "quality management"),
+    ("Qualitätsmanager (m/w/d)",                       NONE, "other"),
+    # medtech
+    ("Entwicklungsingenieur Medizintechnik",           NONE, "medtech r&d"),
+    ("Systems Engineer",                               MED,  "medtech r&d"),
+    ("Biomedical Engineer",                            MED,  "medtech r&d"),
+    ("Softwareentwickler C++ Medizintechnik",          NONE, "medtech software"),
+    ("Servicetechniker (m/w/d)",                       MED,  "medtech service"),
+    ("Medizintechniker im Außendienst",                NONE, "medtech sales"),
+    ("Medizinprodukteberater (m/w/d)",                 NONE, "medtech sales"),
+    ("Key Account Manager Medical Devices",            NONE, "medtech sales"),
+    ("Produktmanager Medizintechnik",                  NONE, "medtech product"),
+    ("Produktionsmitarbeiter Medizintechnik",          NONE, "medtech production"),
+    ("Servicetechniker (m/w/d)",                       NONE, "other"),
+    # digital health
+    ("Product Owner Digital Health",                   NONE, "digital health product"),
+    ("Backend Developer",                              DH,   "digital health engineer"),
+    ("Software Engineer eHealth",                      NONE, "digital health engineer"),
+    ("HL7/FHIR Schnittstellenentwickler",              NONE, "health it"),
+    ("Medizininformatiker (m/w/d)",                    NONE, "health it"),
+    ("Digital Health Consultant",                      NONE, "digital health consulting"),
+    # a medical-device title is not pulled into digital health by its description
+    ("Softwareentwickler Medizintechnik",              DH,   "medtech software"),
+    # excludes: senior, lead and head-of roles are out of scope
+    ("Senior Regulatory Affairs Manager",              NONE, "senior level"),
+    ("Head of Regulatory Affairs Medical Devices",     NONE, "senior level"),
+    ("Leiter Zulassung Medizinprodukte",               NONE, "senior level"),
+    ("Team Lead QA/RA",                                NONE, "senior level"),
+    ("Principal Systems Engineer Medizintechnik",      NONE, "senior level"),
+    ("Director Clinical Affairs",                      NONE, "senior level"),
+    # other excludes
+    ("Werkstudent Regulatory Affairs",                 NONE, "entry programme"),
+    ("Praktikum Medizintechnik",                       NONE, "entry programme"),
+    ("Gesundheits- und Krankenpfleger",                MED,  "clinical staff"),
+    ("Assistenzarzt Kardiologie",                      MED,  "clinical staff"),
+    ("Initiativbewerbung",                             MED,  "invalid"),
+    ("Versicherungsagent",                             NONE, "other"),
 ]
 
 
-@pytest.mark.parametrize("title,expected", CASES)
-def test_classify(title, expected):
-    assert C.classify(title) == expected
+@pytest.mark.parametrize("title,desc,expected", CASES)
+def test_classify(title, desc, expected):
+    assert C.classify(title, desc) == expected
+
+
+def test_no_published_row_is_senior():
+    published = [t for t, d, f in CASES if f in C.KEEP]
+    assert all(C.seniority(t) != "senior" for t in published)
 
 
 def test_role_groups():
-    assert C.role_group("backend engineer") == "software"
-    assert C.role_group("mlops") == "ai"
-    assert C.role_group("data analyst") == "data"
-    assert C.role_group("embedded / qa") == "excluded"
+    assert C.role_group("ra manager") == "regulatory"
+    assert C.role_group("qa / ra") == "regulatory"
+    assert C.role_group("medtech service") == "medtech"
+    assert C.role_group("health it") == "digital health"
+    assert C.role_group("clinical staff") == "excluded"
+
+
+def test_every_published_family_has_a_group():
+    assert all(C.role_group(f) != "excluded" for f in C.KEEP)
 
 
 def test_seniority():
-    assert C.seniority("Senior Backend Engineer") == "senior"
-    assert C.seniority("Junior Data Analyst") == "junior"
-    assert C.seniority("Data Analyst") == "mid"
+    assert C.seniority("Senior Regulatory Affairs Manager") == "senior"
+    assert C.seniority("Leiter Zulassung") == "senior"
+    assert C.seniority("Junior RA Specialist") == "junior"
+    assert C.seniority("Regulatory Affairs Specialist") == "mid"
 
 
 def test_city_normalisation():

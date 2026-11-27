@@ -1,50 +1,38 @@
-
 import sys
 import pathlib
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent / "src"))
 
-from matcher import extract, evaluate      
-
-def test_sql_not_matched_inside_postgresql():
-    assert extract("We use PostgreSQL daily") == ["postgres"]
+from matcher import extract, evaluate
 
 
-def test_sql_not_matched_inside_mysql():
-    assert extract("Legacy stack on MySQL") == ["mysql"]
+def test_core_regulatory_frameworks():
+    txt = "Erfahrung mit EU MDR, IVDR und FDA 510(k) Einreichungen"
+    assert {"mdr", "ivdr", "fda", "submissions"} <= set(extract(txt))
+
+
+def test_standards_by_number():
+    txt = "Kenntnisse der ISO 13485, ISO 14971 und IEC 62304"
+    assert set(extract(txt)) == {"iso13485", "iso14971", "iec62304"}
+
+
+def test_qmsr_is_not_counted_as_generic_fda_cfr():
+    out = extract("Compliance with 21 CFR 820")
+    assert "qmsr" in out and "fda" not in out
+
+
+def test_german_practices():
+    txt = ("Erstellung der technischen Dokumentation und klinischen "
+           "Bewertung, Risikomanagement")
+    assert {"tech_doc", "clinical_eval", "risk_mgmt"} <= set(extract(txt))
+
+
+def test_health_it():
+    assert {"hl7", "fhir"} <= set(extract("Schnittstellen mit HL7 und FHIR"))
 
 
 def test_java_not_matched_inside_javascript():
     assert "java" not in extract("Strong JavaScript skills required")
-
-
-def test_java_still_matched_on_its_own():
-    assert "java" in extract("Java and Scala experience")
-
-
-def test_r_not_matched_in_a_name():
-    assert "r_lang" not in extract("Contact R. Mueller for details")
-
-
-def test_r_matched_with_tech_context():
-    assert "r_lang" in extract("Sprachen: Python, R, SQL")
-
-
-def test_german_posting():
-    txt = "Kenntnisse in Python und Erfahrung mit Apache Spark"
-    assert set(extract(txt)) == {"python", "spark"}
-
-
-def test_german_real_snippet():
-    txt = ("Technisch betreiben wir zwei Generationen parallel: ein "
-           "ueber Jahre gewachsenes, hochbelastetes Kernsystem "
-           "(PHP / MySQL) und einen modernen Node-Stack")
-    assert set(extract(txt)) == {"php", "mysql"}
-
-
-def test_umlauts_do_not_break_matching():
-    txt = "Für diese Rolle brauchst du Erfahrung mit Databricks"
-    assert "databricks" in extract(txt)
 
 
 def test_empty_input():
@@ -53,50 +41,20 @@ def test_empty_input():
 
 
 def test_no_duplicates_returned():
-    txt = "Python, python, PYTHON everywhere"
-    assert extract(txt).count("python") == 1
+    assert extract("MDR, mdr, MDR").count("mdr") == 1
 
 
 def test_result_is_sorted():
-    out = extract("Spark, Airflow, Python")
+    out = extract("ISO 13485, MDR, CAPA, Python")
     assert out == sorted(out)
 
 
 def test_evaluate_perfect_score():
-    rows = [{"description": "We use Python and Spark",
-             "skills_true": "python;spark"}]
+    rows = [{"description": "MDR and ISO 13485", "skills_true": "mdr;iso13485"}]
     r = evaluate(rows)
-    assert r["precision"] == 1.0
-    assert r["recall"] == 1.0
+    assert r["precision"] == 1.0 and r["recall"] == 1.0
 
 
 def test_evaluate_catches_a_miss():
-    rows = [{"description": "We use Python",
-             "skills_true": "python;spark"}]
-    r = evaluate(rows)
-    assert r["recall"] < 1.0
-
-
-def test_react_native_is_not_react():
-    assert extract("We build with React Native") == ["react_native"]
-
-
-def test_react_and_typescript():
-    assert set(extract("React.js with TypeScript and Node.js")) == {
-        "react", "typescript", "nodejs"}
-
-
-def test_typescript_is_not_javascript():
-    assert extract("TypeScript only") == ["typescript"]
-
-
-def test_csharp_dotnet_and_cpp():
-    assert set(extract("C# / .NET and some C++")) == {"csharp", "cpp"}
-
-
-def test_swift_banking_network_is_not_swift():
-    assert "swift" not in extract("Erfahrung mit SWIFT MT Nachrichten")
-
-
-def test_swift_language():
-    assert "swift" in extract("iOS development in Swift and SwiftUI")
+    rows = [{"description": "MDR only", "skills_true": "mdr;iso13485"}]
+    assert evaluate(rows)["recall"] < 1.0

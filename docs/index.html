@@ -3,41 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DACH Data Job Market Tracker · Christoph Ruckensteiner &amp; Shahriar Yazdipour</title>
+<title>DACH MedTech &amp; Regulatory Job Market Tracker</title>
 <meta name="description"
-      content="Daily tracker of AI, data and software engineering job postings in Germany,
-               Austria and Switzerland, built by Christoph Ruckensteiner and Shahriar Yazdipour
-               on a Databricks and Delta Lake pipeline.">
-<meta name="author" content="Christoph Ruckensteiner, Shahriar Yazdipour">
-<link rel="canonical" href="https://chrisinho8.github.io/DACH-data-job-market/">
+      content="Daily tracker of Regulatory Affairs, Medical Device (Medizintechnik) and
+               Digital Health job postings in Germany and Switzerland.">
+<meta name="author" content="Shahriar Yazdipour, Christoph Ruckensteiner">
+<link rel="canonical" href="https://reality-x.github.io/DACH-medical-eng-job-market/">
 <meta property="og:title"
-      content="DACH Data Job Market Tracker by Christoph Ruckensteiner and Shahriar Yazdipour">
+      content="DACH MedTech &amp; Regulatory Affairs Job Market Tracker">
 <meta property="og:description"
-      content="AI, data and software engineering job postings in Germany, Austria and
-               Switzerland, tracked daily.">
+      content="Regulatory Affairs, Medical Device and Digital Health job postings in
+               Germany and Switzerland, tracked daily.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://chrisinho8.github.io/DACH-data-job-market/assets/og.png">
-<meta property="og:url" content="https://chrisinho8.github.io/DACH-data-job-market/">
-<meta name="twitter:card" content="summary_large_image">
-<!-- Tells search engines who built this and links the real name to
-     the LinkedIn and GitHub profiles (schema.org structured data). -->
+<meta property="og:url" content="https://reality-x.github.io/DACH-medical-eng-job-market/">
+<meta name="twitter:card" content="summary">
+<!-- schema.org structured data -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
-    {
-      "@type": "Person",
-      "@id": "https://chrisinho8.github.io/DACH-data-job-market/#christoph",
-      "name": "Christoph Ruckensteiner",
-      "alternateName": ["Chris Ruckensteiner", "Chrisinho8"],
-      "url": "https://www.linkedin.com/in/cruckensteiner112",
-      "sameAs": [
-        "https://www.linkedin.com/in/cruckensteiner112",
-        "https://github.com/Chrisinho8"
-      ],
-      "knowsAbout": ["Data engineering", "Databricks", "Delta Lake",
-                     "PySpark", "SQL", "Python"]
-    },
     {
       "@type": "Person",
       "@id": "https://yazdipour.com/#shahriar",
@@ -46,32 +30,39 @@
       "sameAs": ["https://github.com/yazdipour"]
     },
     {
+      "@type": "Person",
+      "@id": "https://www.linkedin.com/in/cruckensteiner112#christoph",
+      "name": "Christoph Ruckensteiner",
+      "url": "https://www.linkedin.com/in/cruckensteiner112",
+      "sameAs": ["https://github.com/Chrisinho8"]
+    },
+    {
       "@type": "WebSite",
-      "@id": "https://chrisinho8.github.io/DACH-data-job-market/#website",
-      "url": "https://chrisinho8.github.io/DACH-data-job-market/",
-      "name": "DACH Data Job Market Tracker",
+      "@id": "https://reality-x.github.io/DACH-medical-eng-job-market/#website",
+      "url": "https://reality-x.github.io/DACH-medical-eng-job-market/",
+      "name": "DACH MedTech & Regulatory Job Market Tracker",
       "inLanguage": "en",
-      "author": [{ "@id": "https://chrisinho8.github.io/DACH-data-job-market/#christoph" }, { "@id": "https://yazdipour.com/#shahriar" }],
-      "creator": [{ "@id": "https://chrisinho8.github.io/DACH-data-job-market/#christoph" }, { "@id": "https://yazdipour.com/#shahriar" }]
+      "author": [{ "@id": "https://yazdipour.com/#shahriar" }]
     },
     {
       "@type": "Dataset",
-      "@id": "https://chrisinho8.github.io/DACH-data-job-market/#dataset",
-      "name": "DACH AI and Data Job Market Tracker",
-      "description": "Daily snapshots of AI, data and software engineering job postings in Germany, Austria and Switzerland from the Adzuna API, classified into 21 roles and aggregated through a Databricks and Delta Lake pipeline by Christoph Ruckensteiner.",
-      "url": "https://chrisinho8.github.io/DACH-data-job-market/",
-      "creator": [{ "@id": "https://chrisinho8.github.io/DACH-data-job-market/#christoph" }, { "@id": "https://yazdipour.com/#shahriar" }],
+      "@id": "https://reality-x.github.io/DACH-medical-eng-job-market/#dataset",
+      "name": "DACH Regulatory Affairs, MedTech and Digital Health Job Market",
+      "description": "Daily snapshots of Regulatory Affairs, medical device (Medizintechnik) and Digital Health job postings in Germany and Switzerland from the Adzuna API, classified into 15 roles in three groups.",
+      "url": "https://reality-x.github.io/DACH-medical-eng-job-market/",
+      "creator": [{ "@id": "https://yazdipour.com/#shahriar" }],
       "isAccessibleForFree": true,
-      "spatialCoverage": ["Germany", "Austria", "Switzerland"],
-      "temporalCoverage": "2026-07-29/..",
-      "keywords": ["data engineer jobs", "AI jobs", "job market",
-                   "Germany", "Austria", "Switzerland", "DACH",
-                   "Databricks", "Delta Lake"],
-      "codeRepository": "https://github.com/Chrisinho8/DACH-data-job-market",
+      "spatialCoverage": ["Germany", "Switzerland"],
+      "temporalCoverage": "2026-11-27/..",
+      "keywords": ["regulatory affairs jobs", "regulatory affairs manager",
+                   "medical device jobs", "Medizintechnik Jobs",
+                   "digital health jobs", "MDR", "ISO 13485",
+                   "Germany", "Switzerland", "DACH"],
+      "codeRepository": "https://github.com/reality-x/DACH-medical-eng-job-market",
       "distribution": [{
         "@type": "DataDownload",
         "encodingFormat": "application/json",
-        "contentUrl": "https://chrisinho8.github.io/DACH-data-job-market/data/postings.json"
+        "contentUrl": "https://reality-x.github.io/DACH-medical-eng-job-market/data/postings.json"
       }]
     }
   ]
@@ -585,7 +576,7 @@
 
 <nav class="topnav">
   <div class="wrap navwrap">
-    <a class="brand" href="#overview">DACH AI/Data/SWE job market</a>
+    <a class="brand" href="#overview">DACH MedTech &amp; RA job market</a>
     <div class="navlinks">
       <a href="#geo">Map</a>
       <a href="#postings-section">Postings</a>
@@ -603,13 +594,14 @@
       <img class="hdmark" src="assets/dach.svg" alt=""
            width="86" height="107" loading="eager"
            onerror="this.remove()">
-      <h1>What's up with the
-          AI, data and software job market in the DACH region?</h1>
+      <h1>What's up with the Regulatory Affairs, MedTech and
+          Digital Health job market in the DACH region?</h1>
     </div>
     <p class="sub">
-      Every day at 08:00 UTC+2, data from job-postings across all three DACH
-      countries gets pulled from an API (Adzuna), loaded into a Delta Lake
-      pipeline in Databricks, and aggregated for various insights.
+      Job postings for Regulatory Affairs, medical devices
+      (Medizintechnik) and Digital Health across Germany and Switzerland
+      are pulled from the Adzuna API, classified into 15 roles by a
+      GitHub Actions pipeline, and aggregated for various insights.
     </p>
     <p class="byline">
       Built by <a href="https://www.linkedin.com/in/cruckensteiner112"
@@ -676,7 +668,7 @@
 
       
   <section>
-    <h2>Main overview for Germany, Austria and Switzerland</h2>
+    <h2>Main overview for Germany and Switzerland</h2>
     <p class="note">
     </p>
     <div id="ctrycards" class="ctry"></div>
@@ -707,12 +699,11 @@
       <div>
         <div class="map-plot">
           <svg id="map" viewBox="0 0 600 727" role="img"
-               aria-label="Map of live postings by place in Germany, Austria and Switzerland"
+               aria-label="Map of live postings by place in Germany and Switzerland"
                xmlns="http://www.w3.org/2000/svg"></svg>
         </div>
         <div class="legend" id="leg-bubbles">
           <span><i class="sw" style="background:#E56743"></i>Germany</span>
-          <span><i class="sw" style="background:#5C87A8"></i>Austria</span>
           <span><i class="sw" style="background:#6FA37F"></i>Switzerland</span>
         </div>
         <div class="legend" id="leg-heat" hidden>
@@ -839,7 +830,7 @@
     <p class="note">
       Everyday a point is added, nothing is overwritten. Days open
       and posting volume come from the same daily runs that feed the
-      rest of the page. Tracking started on 08-08-2026. Shaded days had
+      rest of the page. Tracking started on 27-11-2026. Shaded days had
       no pipeline run and stay empty; nothing is interpolated.
     </p>
     <div class="mapctl">
@@ -866,7 +857,7 @@
   </section>
 
   <section id="newposts-section" hidden>
-    <h2>New job postings per day (tracking since 27.08.2026)
+    <h2>New job postings per day (tracking since 27.11.2026)
       <span class="np-since"></span></h2>
     <p class="note">
       Counted by the day Adzuna lists the advert. Each colour is one
@@ -907,7 +898,7 @@
     <h2>The 15 most-mentioned skills</h2>
     <p class="note">Share of postings that mention each skill.</p>
     <ul class="leg-inline">
-      <li><i style="background:#E56743"></i>Generative-AI skills</li>
+      <li><i style="background:#E56743"></i>Regulations and standards</li>
       <li><i style="background:#5C87A8"></i>Other skills</li>
     </ul>
     <div class="vocab-cols">
@@ -941,12 +932,13 @@
   </section>
 
   <section id="skillrole-section" hidden>
-    <h2>Which technical skills do postings ask for?</h2>
+    <h2>Which regulations, standards and skills do postings ask for?</h2>
     <p class="note">
-      Each bar is the share of postings naming that tool, so the bars do
-      not add to 100%. One posting can ask for Python, SQL and Airflow.
+      Each bar is the share of postings naming that skill, so the bars do
+      not add to 100%. One posting can ask for EU MDR, ISO 13485 and
+      ISO 14971.
       <strong>These are mention rates, not requirement rates:</strong>
-      descriptions are truncated at 500 characters, so a tool only
+      descriptions are truncated at 500 characters, so a skill only
       counts if it appears early. Roles with three or fewer extracted
       skills are not offered in the picker.
     </p>
@@ -1015,7 +1007,7 @@
           skill (top 8)</p>
         <div class="hb" id="rp-skills"></div>
         <ul class="leg-inline sm">
-          <li><i style="background:#E56743"></i>GenAI</li>
+          <li><i style="background:#E56743"></i>Regulation / standard</li>
           <li><i style="background:#5C87A8"></i>Other</li>
           <li><b class="tk"></b>All postings</li>
         </ul>
@@ -1070,10 +1062,10 @@
   <section>
     <h2>The pipeline's own error rates</h2>
     <p class="note" id="n14-note">
-      Most dashboards do not publish how wrong they might be. The first
-      two are measured on every run. The two matcher scores are
-      <strong>not</strong>: they come from a manual spot check on a
-      hand-labelled sample and are not recomputed often.
+      Most dashboards do not publish how wrong they might be. All four
+      are measured on every run. "Snapshot fetched" is the day the
+      postings were last pulled from Adzuna; on other days the stored
+      snapshot is re-aggregated with ages moved forward.
     </p>
     <div id="n14_quality" class="stats"></div>
   </section>
@@ -1099,29 +1091,32 @@
      
       
       <li><strong>One aggregator is not the whole market</strong>, and
-          its coverage is not equally deep in all three countries.
+          its coverage is not equally deep in both countries.
           Cross-country comparisons should be read as indicative.</li>
       <li><strong>The posting date is the aggregator's</strong>, which
           may be when it indexed the job rather than when the employer
           published it.</li>
       <li><strong>Roles are classified from the job title</strong> with
-          keyword rules, not from the description, which the aggregator
-          truncates.</li>
+          keyword rules. Regulatory titles stand on their own; generic
+          MedTech and Digital Health titles ("Servicetechniker",
+          "Backend Developer") only count when the title or the
+          truncated description names the domain (Medizintechnik, MDR,
+          DiGA, FHIR...), so those groups are a floor.</li>
       <li><strong>Multi-location jobs are counted more than
           once.</strong> The aggregator returns one city per listing
           and no remote flag, so a role advertised in a dozen offices
-          becomes a dozen rows. This inflates the headline total by
-          roughly 490 postings.</li>
-      <li><strong>The AI numbers are a floor, not a total.</strong>
-          Titles that say only "AI" or "KI" without naming a role are
-          dropped, so the six AI families cover every posting that
-          describes itself, not every posting that mentions AI.</li>
+          becomes a dozen rows.</li>
+      <li><strong>Senior, lead and head-of roles are excluded</strong>
+          (Senior, Lead, Principal, Head, Director, Leiter/Leitung...),
+          so the tracker covers junior and mid-level jobs only.</li>
+      <li><strong>Regulatory Affairs is counted across industries.</strong>
+          A Regulatory Affairs Manager at a pharma or chemicals company
+          is included, because the role and the skills transfer.</li>
  
       <li><strong>Entry programmes are excluded</strong> (Ausbildung,
           duales Studium, Werkstudent, Praktikum, Trainee), along with
-          Controlling and finance roles, data-centre infrastructure,
-          and embedded/firmware and QA/test engineering jobs pulled in
-          by keyword search.</li>
+          along with clinical and care staff (physicians, nurses,
+          MTA, pharmacists, therapists) pulled in by keyword search.</li>
 
 
       <li><strong>Listings link out, they are not republished.</strong>

@@ -13,11 +13,6 @@ PATTERNS = sorted(
 COMPILED = [(skill, re.compile(alias, re.I))
             for skill, alias in PATTERNS]
 
-R_CONTEXT = re.compile(
-    r"(python|sql|statist|analys|sprachen|languages|matlab|sas)",
-    re.I)
-
-
 def extract(text):
     if not text:
         return []
@@ -30,12 +25,8 @@ def extract(text):
         if not m:
             continue
 
-        if skill == "r_lang" and not R_CONTEXT.search(text):
-            continue
-
         found.append(skill)
-
-   
+        # blank the match so a shorter alias cannot match inside it
         remaining = (remaining[:m.start()]
                      + " " * (m.end() - m.start())
                      + remaining[m.end():])

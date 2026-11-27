@@ -1,3 +1,1 @@
 pytest==8.2.0      # tests
-requests==2.32.3   # notebooks/01, 06
-pandas==2.2.2      # notebooks/06

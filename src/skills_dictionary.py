@@ -1,241 +1,148 @@
-"""Skills dictionary. Mirror of notebooks/04_skills_extract.py; the
-GitHub Actions pipeline (src/pipeline.py) uses this copy."""
+"""Skills dictionary for regulatory affairs, medical devices and digital
+health postings. Keys are published as-is; docs/app.js maps them to
+display names (SKILL_LABEL) and categories to labels (SKILL_CAT_LABEL).
+
+Matching runs on the lower-cased title plus description snippet.
+"""
 
 SKILLS = {
- "sql":        {"cat": "language",   "aliases": [r"\bsql\b"]},
- "python":     {"cat": "language",   "aliases": [r"\bpython\b"]},
- "scala":      {"cat": "language",   "aliases": [r"\bscala\b"]},
- "java":       {"cat": "language",   "aliases": [r"\bjava\b(?!script)"]},
- "javascript": {"cat": "language",   "aliases": [r"\bjavascript\b"]},
- "php":        {"cat": "language",   "aliases": [r"\bphp\b"]},
- "r_lang":     {"cat": "language",   "aliases": [
-                    r"(?<=[ ,/(])r(?=[ ,/)])"]},
+ # --- regulations and market-access frameworks ---------------------
+ "mdr":        {"cat": "regulation", "aliases": [
+                    r"\beu[\s\-]?mdr\b", r"\bmdr\b",
+                    r"medical device regulation",
+                    r"\b2017/745\b"]},
+ "ivdr":       {"cat": "regulation", "aliases": [
+                    r"\bivdr\b", r"in[\s\-]vitro[\s\-]diagnostic\w* "
+                    r"regulation", r"\b2017/746\b"]},
+ "mdd":        {"cat": "regulation", "aliases": [
+                    r"\bmdd\b", r"\b93/42\b",
+                    r"medical device directive"]},
+ "fda":        {"cat": "regulation", "aliases": [
+                    r"\bfda\b", r"\b510\s?\(k\)", r"\bde novo\b",
+                    r"\bpma\b", r"21 cfr(?! (part )?820)"]},
+ "qmsr":       {"cat": "regulation", "aliases": [
+                    r"21 cfr (part )?820", r"\bqmsr\b", r"\bqsr\b"]},
+ "mdsap":      {"cat": "regulation", "aliases": [r"\bmdsap\b"]},
+ "ce_marking": {"cat": "regulation", "aliases": [
+                    r"\bce[\s\-]?(marking|mark|kennzeichnung|"
+                    r"konformit\w*)\b"]},
+ "notified_body": {"cat": "regulation", "aliases": [
+                    r"notified bod(y|ies)", r"benannte[rn]? stelle"]},
+ "swissmedic": {"cat": "regulation", "aliases": [
+                    r"\bswissmedic\b", r"\bmepv\b"]},
+ "ukca":       {"cat": "regulation", "aliases": [r"\bukca\b",
+                                                 r"\bmhra\b"]},
+ "diga":       {"cat": "regulation", "aliases": [
+                    r"\bdiga\b", r"\bdipa\b",
+                    r"digitale gesundheitsanwendung"]},
+ "gdpr":       {"cat": "regulation", "aliases": [
+                    r"\bgdpr\b", r"\bdsgvo\b", r"\bdatenschutz\b"]},
+ "ai_act":     {"cat": "regulation", "aliases": [
+                    r"\bai act\b", r"\bki[\s\-]verordnung\b"]},
+ "gmp":        {"cat": "regulation", "aliases": [r"\bc?gmp\b",
+                                                 r"good manufacturing"]},
 
+ # --- harmonised standards ----------------------------------------
+ "iso13485":   {"cat": "standard",   "aliases": [r"\b13485\b"]},
+ "iso14971":   {"cat": "standard",   "aliases": [r"\b14971\b"]},
+ "iec62304":   {"cat": "standard",   "aliases": [r"\b62304\b"]},
+ "iec60601":   {"cat": "standard",   "aliases": [r"\b60601\b"]},
+ "iec62366":   {"cat": "standard",   "aliases": [r"\b62366\b"]},
+ "iso10993":   {"cat": "standard",   "aliases": [r"\b10993\b",
+                                                 r"biocompatib",
+                                                 r"biokompatib"]},
+ "iso14155":   {"cat": "standard",   "aliases": [r"\b14155\b"]},
+ "iec82304":   {"cat": "standard",   "aliases": [r"\b82304\b"]},
+ "iec81001":   {"cat": "standard",   "aliases": [r"\b81001\b"]},
+ "iso27001":   {"cat": "standard",   "aliases": [r"\b27001\b"]},
+ "iso9001":    {"cat": "standard",   "aliases": [r"\b9001\b"]},
 
- "spark":      {"cat": "processing", "aliases": [r"\bapache spark\b",
-                                                 r"\bpyspark\b",
-                                                 r"\bspark\b"]},
- "hadoop":     {"cat": "legacy",     "aliases": [r"\bhadoop\b",
-                                                 r"\bhdfs\b",
-                                                 r"\bmapreduce\b",
-                                                 r"\bhive\b"]},
- "kafka":      {"cat": "streaming",  "aliases": [r"\bkafka\b"]},
- "flink":      {"cat": "streaming",  "aliases": [r"\bflink\b"]},
+ # --- regulatory and quality practices -----------------------------
+ "risk_mgmt":  {"cat": "practice",   "aliases": [
+                    r"risk management", r"risikomanagement",
+                    r"risikoanalyse", r"risk analysis", r"\bfmea\b"]},
+ "tech_doc":   {"cat": "practice",   "aliases": [
+                    r"technical documentation",
+                    r"technische[rn]? dokumentation",
+                    r"technical file", r"design dossier"]},
+ "clinical_eval": {"cat": "practice", "aliases": [
+                    r"clinical evaluation", r"klinische[rn]? bewertung",
+                    r"\bcer\b", r"clinical evidence"]},
+ "pms":        {"cat": "practice",   "aliases": [
+                    r"post[\s\-]market", r"\bpms\b", r"\bpmcf\b",
+                    r"marktbeobachtung", r"\bpsur\b"]},
+ "vigilance":  {"cat": "practice",   "aliases": [
+                    r"vigilan[cz]", r"complaint handling",
+                    r"reklamationsmanagement", r"beschwerdemanagement"]},
+ "capa":       {"cat": "practice",   "aliases": [r"\bcapa\b"]},
+ "design_control": {"cat": "practice", "aliases": [
+                    r"design control", r"design history file",
+                    r"\bdhf\b", r"design transfer"]},
+ "validation": {"cat": "practice",   "aliases": [
+                    r"\bvalidation\b", r"\bverification\b",
+                    r"validierung", r"verifizierung",
+                    r"\bv&v\b", r"\biq/oq/pq\b"]},
+ "audits":     {"cat": "practice",   "aliases": [r"\baudits?\b",
+                                                 r"auditierung"]},
+ "usability":  {"cat": "practice",   "aliases": [
+                    r"usability engineering", r"human factors",
+                    r"gebrauchstauglichkeit"]},
+ "cybersecurity": {"cat": "practice", "aliases": [
+                    r"cyber[\s\-]?security", r"informationssicherheit"]},
+ "submissions": {"cat": "practice",  "aliases": [
+                    r"submissions?\b", r"zulassungsantr\w*",
+                    r"einreichung\w*", r"registrierung\w*",
+                    r"market access", r"marktzugang"]},
+ "udi":        {"cat": "practice",   "aliases": [r"\budi\b",
+                                                 r"\beudamed\b"]},
+ "qms":        {"cat": "practice",   "aliases": [
+                    r"\bqms\b", r"quality management system",
+                    r"qualitaetsmanagementsystem",
+                    r"qualitätsmanagementsystem"]},
+ "sop":        {"cat": "practice",   "aliases": [r"\bsops?\b"]},
+ "reimbursement": {"cat": "practice", "aliases": [
+                    r"reimbursement", r"erstattung", r"\bhta\b"]},
 
+ # --- health IT and interoperability ------------------------------
+ "hl7":        {"cat": "health_it",  "aliases": [r"\bhl7\b"]},
+ "fhir":       {"cat": "health_it",  "aliases": [r"\bfhir\b"]},
+ "dicom":      {"cat": "health_it",  "aliases": [r"\bdicom\b",
+                                                 r"\bpacs\b"]},
+ "ihe":        {"cat": "health_it",  "aliases": [r"\bihe\b"]},
+ "telematik":  {"cat": "health_it",  "aliases": [
+                    r"telematikinfrastruktur", r"\bgematik\b",
+                    r"elektronische[rn]? patientenakte"]},
+ "kis":        {"cat": "health_it",  "aliases": [
+                    r"krankenhausinformationssystem", r"\bkis\b",
+                    r"\behr\b", r"\bemr\b", r"\bepic\b"]},
+ "samd":       {"cat": "health_it",  "aliases": [
+                    r"\bsamd\b", r"software as a medical device",
+                    r"medical device software", r"medizinische software"]},
 
- "databricks": {"cat": "platform",   "aliases": [r"\bdatabricks\b"]},
- "snowflake":  {"cat": "warehouse",  "aliases": [r"\bsnowflake\b"]},
- "bigquery":   {"cat": "warehouse",  "aliases": [r"\bbigquery\b"]},
- "redshift":   {"cat": "warehouse",  "aliases": [r"\bredshift\b"]},
- "synapse":    {"cat": "warehouse",  "aliases": [r"\bsynapse\b"]},
-
-
- "airflow":    {"cat": "orchestr",   "aliases": [r"\bapache airflow\b",
-                                                 r"\bairflow\b"]},
- "dbt":        {"cat": "transform",  "aliases": [r"\bdbt\b"]},
- "ssis":       {"cat": "legacy",     "aliases": [r"\bssis\b"]},
- "talend":     {"cat": "legacy",     "aliases": [r"\btalend\b"]},
-
-
- "postgres":   {"cat": "database",   "aliases": [r"\bpostgresql\b",
-                                                 r"\bpostgres\b"]},
- "mysql":      {"cat": "database",   "aliases": [r"\bmysql\b"]},
- "mssql":      {"cat": "database",   "aliases": [r"\bsql server\b",
-                                                 r"\bt-sql\b",
-                                                 r"\bms sql\b"]},
- "oracle":     {"cat": "database",   "aliases": [r"\boracle\b"]},
- "mongodb":    {"cat": "database",   "aliases": [r"\bmongodb\b",
-                                                 r"\bmongo\b"]},
- "elastic":    {"cat": "database",   "aliases": [r"\belasticsearch\b"]},
-
-
- "aws":        {"cat": "cloud",      "aliases": [r"\baws\b",
-                                                 r"\bamazon web services\b"]},
- "azure":      {"cat": "cloud",      "aliases": [r"\bazure\b",
-                                                 r"\bdata factory\b"]},
- "gcp":        {"cat": "cloud",      "aliases": [r"\bgcp\b",
-                                                 r"\bgoogle cloud\b"]},
-
-
- "docker":     {"cat": "devops",     "aliases": [r"\bdocker\b"]},
- "kubernetes": {"cat": "devops",     "aliases": [r"\bkubernetes\b",
-                                                 r"\bk8s\b"]},
- "terraform":  {"cat": "devops",     "aliases": [r"\bterraform\b"]},
- "git":        {"cat": "devops",     "aliases": [r"\bgithub\b",
-                                                 r"\bgitlab\b",
-                                                 r"\bgit\b"]},
- "cicd":       {"cat": "devops",     "aliases": [r"\bci/cd\b",
-                                                 r"\bjenkins\b"]},
-
-
- "powerbi":    {"cat": "bi",         "aliases": [r"\bpower ?bi\b"]},
- "tableau":    {"cat": "bi",         "aliases": [r"\btableau\b"]},
- "looker":     {"cat": "bi",         "aliases": [r"\blooker\b"]},
- "qlik":       {"cat": "bi",         "aliases": [r"\bqlik\b"]},
- "excel":      {"cat": "bi",         "aliases": [r"\bexcel\b"]},
-
-
- # --- ML frameworks: how a model gets trained -----------------
- "pytorch":    {"cat": "ml_framework", "aliases": [r"\bpytorch\b"]},
- "tensorflow": {"cat": "ml_framework", "aliases": [r"\btensorflow\b"]},
- "keras":      {"cat": "ml_framework", "aliases": [r"\bkeras\b"]},
- "sklearn":    {"cat": "ml_framework", "aliases": [r"\bscikit-?learn\b",
-                                                   r"\bsklearn\b"]},
- "xgboost":    {"cat": "ml_framework", "aliases": [r"\bxgboost\b",
-                                                   r"\blightgbm\b",
-                                                   r"\bcatboost\b"]},
- "jax":        {"cat": "ml_framework", "aliases": [r"\bjax\b"]},
-
- # --- MLOps: how a model reaches production -------------------
- # Kept separate from ml_framework because these are the skills
- # that separate "trained a model in a notebook" from "runs a
- # model as a service", and that gap is the whole MLOps story.
- "mlflow":     {"cat": "mlops",      "aliases": [r"\bmlflow\b"]},
- "kubeflow":   {"cat": "mlops",      "aliases": [r"\bkubeflow\b"]},
- "sagemaker":  {"cat": "mlops",      "aliases": [r"\bsagemaker\b",
-                                                 r"\bsage maker\b"]},
- "vertexai":   {"cat": "mlops",      "aliases": [r"\bvertex ai\b",
-                                                 r"\bvertex\b"]},
- "azureml":    {"cat": "mlops",      "aliases": [r"\bazure ml\b",
-                                                 r"\bazure machine "
-                                                 r"learning\b",
-                                                 r"\bazure ai foundry\b"]},
- "ray":        {"cat": "mlops",      "aliases": [r"\bray serve\b",
-                                                 r"\bray\.io\b",
-                                                 r"\banyscale\b"]},
- "wandb":      {"cat": "mlops",      "aliases": [r"\bweights ?& ?biases\b",
-                                                 r"\bwandb\b"]},
- "bentoml":    {"cat": "mlops",      "aliases": [r"\bbentoml\b",
-                                                 r"\bseldon\b",
-                                                 r"\btriton\b",
-                                                 r"\bkserve\b"]},
- "featurestore": {"cat": "mlops",    "aliases": [r"\bfeature store\b",
-                                                 r"\bfeast\b",
-                                                 r"\btecton\b"]},
-
- # --- Generative AI -------------------------------------------
- # "llm" and "rag" used to be aliases of one skill, which made it
- # impossible to see whether DACH employers are asking for models
- # or for retrieval on top of them. They are now separate.
- "llm":        {"cat": "genai",      "aliases": [r"\bllms?\b",
-                                                 r"\blarge language "
-                                                 r"models?\b",
-                                                 r"\bsprachmodell\w*\b",
-                                                 r"\bfoundation models?\b"]},
- "genai":      {"cat": "genai",      "aliases": [r"\bgenai\b",
-                                                 r"\bgen[\s\-]?ai\b",
-                                                 r"\bgenerative ai\b",
-                                                 r"\bgenerative ki\b"]},
- "rag":        {"cat": "genai",      "aliases": [r"\bretrieval[\s\-]"
-                                                 r"augmented\w*\b",
-                                                 r"\brag\b"]},
- "ai_agents":  {"cat": "genai",      "aliases": [r"\bagentic\b",
-                                                 r"\bai agents?\b",
-                                                 r"\bki[\s\-]agenten?\b",
-                                                 r"\bmulti[\s\-]agent\b",
-                                                 r"\bmcp\b"]},
- "prompting":  {"cat": "genai",      "aliases": [r"\bprompt[\s\-]?"
-                                                 r"engineer\w*\b",
-                                                 r"\bprompting\b"]},
- "langchain":  {"cat": "genai",      "aliases": [r"\blangchain\b",
-                                                 r"\blanggraph\b",
-                                                 r"\bllama[\s\-]?index\b",
-                                                 r"\bsemantic kernel\b",
-                                                 r"\bhaystack\b"]},
- "huggingface": {"cat": "genai",     "aliases": [r"\bhugging ?face\b",
-                                                 r"\btransformers "
-                                                 r"library\b"]},
- "openai_api": {"cat": "genai",      "aliases": [r"\bopenai\b",
-                                                 r"\bgpt-?[45]\b",
-                                                 r"\banthropic\b",
-                                                 # not bare "Claude":
-                                                 # it is a first name
-                                                 # in Swiss postings
-                                                 r"\bclaude (api|sonnet|"
-                                                 r"opus|code)\b",
-                                                 r"\bazure openai\b",
-                                                 r"\bmistral\b",
-                                                 r"\bgemini\b"]},
- "vectordb":   {"cat": "genai",      "aliases": [r"\bvector (db|"
-                                                 r"database|store)\b",
-                                                 r"\bvektordatenbank\b",
-                                                 r"\bpinecone\b",
-                                                 r"\bweaviate\b",
-                                                 r"\bqdrant\b",
-                                                 r"\bmilvus\b",
-                                                 r"\bchroma\b",
-                                                 r"\bpgvector\b",
-                                                 r"\bfaiss\b"]},
- "finetuning": {"cat": "genai",      "aliases": [r"\bfine[\s\-]?tun\w*\b",
-                                                 # LoRaWAN is an IoT
-                                                 # radio protocol and
-                                                 # shows up in DACH
-                                                 # embedded postings
-                                                 r"\blora\b(?!wan)",
-                                                 r"\bpeft\b",
-                                                 r"\brlhf\b",
-                                                 r"\bembeddings?\b"]},
- "ai_eval":    {"cat": "genai",      "aliases": [r"\bllm[\s\-]?as[\s\-]?"
-                                                 r"a[\s\-]?judge\b",
-                                                 r"\bhallucination\w*\b",
-                                                 r"\bguardrails?\b",
-                                                 r"\bevals?\b",
-                                                 r"\bai safety\b",
-                                                 r"\bai alignment\b"]},
-
- # --- NLP and computer vision ---------------------------------
- "nlp":        {"cat": "nlp_cv",     "aliases": [r"\bnlp\b",
-                                                 r"\bnatural language "
-                                                 r"processing\b",
-                                                 r"\bsprachverarbeitung\b",
-                                                 r"\bspacy\b",
-                                                 r"\bnltk\b"]},
- "cv":         {"cat": "nlp_cv",     "aliases": [r"\bcomputer vision\b",
-                                                 r"\bbildverarbeitung\b",
-                                                 r"\bbilderkennung\b",
-                                                 r"\bopencv\b",
-                                                 r"\byolo\b",
-                                                 r"\bobject detection\b"]},
- "deeplearning": {"cat": "nlp_cv",   "aliases": [r"\bdeep learning\b",
-                                                 r"\bneural network\w*\b",
-                                                 r"\bneuronale netze\b",
-                                                 r"\btransformer\b",
-                                                 r"\bdiffusion model\w*\b"]},
-
-
- # --- software engineering ------------------------------------
- "typescript": {"cat": "language",   "aliases": [r"\btypescript\b"]},
- "golang":     {"cat": "language",   "aliases": [r"\bgolang\b",
-                                                 r"\bgo \(golang\)"]},
- "csharp":     {"cat": "language",   "aliases": [r"\bc#", r"\.net\b",
-                                                 r"\bdotnet\b"]},
- "cpp":        {"cat": "language",   "aliases": [r"\bc\+\+"]},
- "kotlin":     {"cat": "language",   "aliases": [r"\bkotlin\b"]},
- "rust":       {"cat": "language",   "aliases": [r"\brust\b"]},
- "react":      {"cat": "frontend",   "aliases": [r"\breact(\.?js)?\b"
-                                                 r"(?! native)"]},
- "angular":    {"cat": "frontend",   "aliases": [r"\bangular(js)?\b"]},
- "vue":        {"cat": "frontend",   "aliases": [r"\bvue(\.?js)?\b"]},
- "nodejs":     {"cat": "backend",    "aliases": [r"\bnode\.?js\b"]},
- "spring":     {"cat": "backend",    "aliases": [r"\bspring boot\b",
-                                                 r"\bspring framework\b"]},
- "django":     {"cat": "backend",    "aliases": [r"\bdjango\b",
-                                                 r"\bfastapi\b",
-                                                 r"\bflask\b"]},
- # SWIFT is also the bank messaging network
- "swift":      {"cat": "mobile",     "aliases": [r"\bswiftui\b",
-                                                 r"\bswift\b(?![\s\-]"
-                                                 r"?(mt|mx|messag|network|"
-                                                 r"code|zahlung|payment))"]},
- "react_native": {"cat": "mobile",   "aliases": [r"\breact native\b"]},
- "flutter":    {"cat": "mobile",     "aliases": [r"\bflutter\b"]},
- "ansible":    {"cat": "devops",     "aliases": [r"\bansible\b"]},
-
- "sap":        {"cat": "enterprise", "aliases": [r"\bsap\b"]},
- "etl":        {"cat": "practice",   "aliases": [r"\betl\b", r"\belt\b"]},
- "datawarehouse": {"cat": "practice", "aliases": [
-                    r"\bdata warehouse\b", r"\bdwh\b",
-                    r"\bdata lakehouse\b", r"\bdata lake\b"]},
+ # --- engineering tools and languages -----------------------------
+ "python":     {"cat": "tool",       "aliases": [r"\bpython\b"]},
+ "cpp":        {"cat": "tool",       "aliases": [r"\bc\+\+"]},
+ "csharp":     {"cat": "tool",       "aliases": [r"\bc#", r"\.net\b"]},
+ "java":       {"cat": "tool",       "aliases": [r"\bjava\b(?!script)"]},
+ "matlab":     {"cat": "tool",       "aliases": [r"\bmatlab\b",
+                                                 r"\bsimulink\b"]},
+ "labview":    {"cat": "tool",       "aliases": [r"\blabview\b"]},
+ "cad":        {"cat": "tool",       "aliases": [
+                    r"\bcad\b", r"\bsolidworks\b", r"\bcreo\b",
+                    r"\bcatia\b", r"\bsiemens nx\b", r"\binventor\b"]},
+ "alm":        {"cat": "tool",       "aliases": [
+                    r"\bpolarion\b", r"\bdoors\b", r"\bjama\b",
+                    r"\bcodebeamer\b"]},
+ "jira":       {"cat": "tool",       "aliases": [r"\bjira\b",
+                                                 r"\bconfluence\b"]},
+ "sap":        {"cat": "tool",       "aliases": [r"\bsap\b"]},
+ "cloud":      {"cat": "tool",       "aliases": [r"\baws\b", r"\bazure\b",
+                                                 r"\bgcp\b",
+                                                 r"google cloud"]},
+ "ai_ml":      {"cat": "tool",       "aliases": [
+                    r"machine learning", r"maschinelles lernen",
+                    r"künstliche intelligenz", r"artificial intelligence",
+                    r"deep learning"]},
 }
 
 CATEGORY = {k: v["cat"] for k, v in SKILLS.items()}

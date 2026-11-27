@@ -1,6 +1,6 @@
 name: data freshness
 
-# Daily check that the Databricks pipeline published today's data.
+# Daily check that the pipeline workflow published today's data.
 # The pipeline runs around 08:00 Vienna time and stamps docs/data/meta.json
 # with the run date (UTC). If today's date is missing by 10:17 Vienna time,
 # this opens an issue labelled "stale-data" and fails, and GitHub emails you.
@@ -45,7 +45,7 @@ jobs:
           if [ -z "$open" ]; then
             gh issue create --label stale-data \
               --title "Tracker data is stale: last published $updated" \
-              --body "The daily pipeline has not published since **$updated** ($age day(s) ago). Check the Databricks job run and the account. This issue closes itself once docs/data/meta.json is from today again."
+              --body "The daily pipeline has not published since **$updated** ($age day(s) ago). Check the pipeline workflow run and the Adzuna secrets. This issue closes itself once docs/data/meta.json is from today again."
           else
             gh issue comment "$open" --body "Still stale on $(date -u +%F): last published $updated ($age day(s) ago)."
           fi

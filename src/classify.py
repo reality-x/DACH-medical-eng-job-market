@@ -1,8 +1,17 @@
 """Title classification and row parsing for the GitHub Actions pipeline.
 
-The regexes are copied from notebooks/03_silver_clean.py, which remains the
-Databricks version. If you change a rule, change it in both places;
-tests/test_classify.py holds the shared test cases.
+Three published role groups:
+
+    regulatory      regulatory affairs, QA/RA, clinical affairs,
+                    medical-device quality management
+    medtech         medical device engineering, product, sales, service
+    digital health  health IT, digital health product, engineering,
+                    consulting
+
+Regulatory titles are unambiguous on their own. MedTech and digital
+health titles usually are not ("Servicetechniker (m/w/d)" at a device
+maker), so those families need a domain signal: in the title, or else
+in the description snippet. tests/test_classify.py holds the cases.
 """
 
 import re as _re
@@ -16,221 +25,223 @@ INVALID = (r"^initiativbewerbung|initiativbewerbung|talentpool|"
 
 ENTRY = (r"\bausbildung\b|duales? studium|dualer bachelor|"
          r"\bwerkstudent|werkstudierend|\bpraktikum\b|\bpraktikant|"
-         r"\btrainee\b|traineeprogramm|bachelor thesis|"
-         r"master student|studienkolleg|bachelor of science|"
-         r"\bdhbw\b|\bhwr\b|b\.\s?a\.\s+in\b|"
-         r"^b\.\s?a\.|abschlussarbeit")
+         r"\btrainee\b|traineeprogramm|bachelor thesis|master thesis|"
+         r"masterarbeit|master student|studienkolleg|"
+         r"\bdhbw\b|\bhwr\b|abschlussarbeit|\binternship\b|\bintern\b")
 
-DATACENTRE = r"data\s*cent(er|re)|rechenzentrum|\bdceo\b"
+# Clinical and care staff: medical, but not the medical-device industry.
+CLINICAL_STAFF = (r"arzt\b|aerztin|physician|\bnurse\b|"
+                  r"pflege|krankenpfleg|hebamme|"
+                  r"medizinische[rn]? fachangestellte|\bmfa\b|"
+                  r"\bmta\b|\bmtr\b|\bmtl\b|radiologietechnolog|"
+                  r"apothek|pharmazeut|therapeut|zahnmedizin|"
+                  r"rettungs|sanitaeter|altenpfleg|betreuungskraft")
 
-FINANCE = (r"controlling|\bcontroller\b|finanzen|buchhalt|"
-           r"\bfp&a\b|financial planning|finance transformation|"
-           r"finance\s*&\s*accounting|finance business partner|"
-           r"kaufmaennisch|vertriebscontrolling|"
-           r"finance-consulting|finance solutions|"
-           r"transaction advisory")
+# --- domain context --------------------------------------------------
 
-R_ARCHITECT = r"data\s+[\w\s\-&/]*architect|datenarchitekt"
-R_ANALYTICS_ENG = r"analytics engineer"
-R_ENGINEER = (r"data engineer|dateningenieur|\bbig data\b|"
-              r"data platform|data scraping|data processing|"
-              r"data\s*&\s*ai[\s\-]*engineer|"
-              r"data\s+(migration|integration|pipeline)|"
-              r"datenbankadministrator|database administrator|"
-              r"\bdba\b")
-R_DWH = (r"data warehouse|\bdwh\b|\betl\b|\bdbt\b|sap bw|"
-         r"datasphere|data.?lake|data vault|data modeler|"
-         r"data mesh|business data cloud")
-R_GOVERNANCE = (r"data governance|data quality|data privacy|"
-                r"master data|data steward|data management|"
-                r"data strategy|data protection")
-R_SCIENTIST = r"data scientist|data science"
-R_ANALYST = r"data analyst|datenanalyst|\bbi analyst"
-R_CONSULTANT = (r"data\s*&\s*ai|data and ai|data\s*&\s*analytics|"
-                r"data analytics|data consultant|daten- und "
-                r"prozessanalyse|\bdata expert\b|data insights|"
-                r"\bit\s*&\s*data\b|business data")
-R_BI = (r"\bbi\b|business intelligence|power ?bi|\btableau\b|"
-        r"\bqlik\b|\bcelonis\b|sap analytics|process mining|"
-        r"process intelligence|\bsac\b|reporting analyst|"
-        r"\bjedox\b")
+MED_CTX = (r"medizintechn|medical device|medizinprodukt|\bmedtech\b|"
+           r"med[\s\-]tech|medical technology|medical equipment|"
+           r"in[\s\-]vitro|\bivdr?\b|\bmdr\b|iso 13485|iec 62304|"
+           r"iec 60601|medizingeraet|medical imaging|"
+           r"diagnostics?\b|implant|orthopae?di|cardio|"
+           r"chirurg|surgical|dental|healthineers|"
+           r"krankenhaustechn|klinik(technik|en)?\b|hospital")
 
+DH_CTX = (r"digital health|digitale gesundheit|e[\s\-]?health|"
+          r"\bdiga\b|\bdipa\b|telemedi|telematik|health[\s\-]?tech|"
+          r"healthcare it|health it|gesundheits[\s\-]?it|"
+          r"medizininformatik|medical informatics|health informatics|"
+          r"\bkis\b|krankenhausinformation|patientenakte|\bepa\b|"
+          r"\bhl7\b|\bfhir\b|\bdicom\b|\bihe\b|\bsamd\b|"
+          r"software as a medical device|mhealth|digital therapeutic|"
+          r"healthcare software|gesundheitsapp|health app")
 
-R_GENAI = (r"\bgenai\b|\bgen[\s\-]?ai\b|generative ai|generative ki|"
-           r"\bllms?\b|\bllmops\b|large language model|"
-           r"sprachmodell|foundation model|grundlagenmodell|"
-           r"\brag\b|retrieval[\s\-]augmented|"
-           r"prompt[\s\-]?engineer|agentic|\bai agent|\bki[\s\-]agent|"
-           r"conversational ai|chatbot engineer|"
-           r"\bai[\s\-]native|copilot engineer")
+# --- regulatory ------------------------------------------------------
 
-# Operating and serving models, not building them.
-R_MLOPS = (r"\bmlops\b|\bml[\s\-]?ops\b|\bmodel ops\b|"
-           r"ml[\s\-](platform|infrastructure|infra|engineer[\s\-]platform)|"
-           r"machine learning (platform|infrastructure|infra|operations)|"
-           r"model (serving|deployment|monitoring)|"
-           r"\bai (platform|infrastructure|infra)\b|"
-           r"\bki[\s\-]plattform\b|feature store")
+_RA = (r"regulatory|zulassung|\bra\b|registrierung von medizin|"
+       r"\bprrc\b|person responsible for regulatory|"
+       r"verantwortliche person.*vorschriften|"
+       r"mdr[\s\-]?(manager|specialist|expert|consultant)|"
+       r"ivdr[\s\-]?(manager|specialist|expert|consultant)")
 
-# Classic ML including deep learning, CV and NLP.
-R_ML = (r"mas?chine\s*learning|\bml[\s\-]?engineer|\bml[\s\-]?ingenieur|"
-        r"maschinelles lernen|deep learning|\bdl engineer\b|"
-        r"reinforcement learning|bestaerkendes lernen|"
-        r"computer vision|bildverarbeitung|bilderkennung|"
-        r"\bnlp\b|natural language processing|"
-        r"sprachverarbeitung|speech recognition|spracherkennung|"
-        r"\bai/ml\b|\bai\s*&\s*ml\b|recommender|"
-        r"predictive model|forecasting engineer")
+# Combined quality + regulatory roles.
+R_QARA = (r"\bqa[\s\-/&]*ra\b|\bra[\s\-/&]*qa\b|\bqm[\s\-/&]*ra\b|"
+          r"\bra[\s\-/&]*qm\b|\bqara\b|\bqra\b|"
+          r"quality\s*(and|&|/)\s*regulatory|"
+          r"regulatory\s*(and|&|/)\s*quality|"
+          r"qualitaet\w*\s*(und|&|/)\s*(regulatory|zulassung)|"
+          r"(regulatory|zulassung)\w*\s*(und|&|/)\s*qualitaet")
 
-# People paid to publish or prototype, not to ship a service.
-R_AI_RESEARCH = (r"applied scientist|research scientist|"
-                 r"research engineer|forschungsingenieur|"
-                 r"\bai research|\bki[\s\-]forsch|"
-                 r"machine learning (researcher|scientist)|"
-                 r"\bphd\b.*\b(ai|ml)\b")
+# Senior, lead and head-of titles are excluded before this runs.
+R_RA_MANAGER = (r"(" + _RA + r").*(manager|verantwortlich)|"
+                r"manager\b.*(" + _RA + r")")
 
-# Advisory, architecture, strategy and product, not implementation.
-R_AI_CONSULT = (r"\bai\s+(consultant|consulting|architect|advisor|"
-                r"strategy|strateg|transformation|solution|"
-                r"presales|sales engineer|product manager|"
-                r"product owner|governance|ethics|compliance)|"
-                r"\bki[\s\-]?(berater|architekt|strategie|"
-                r"transformation)|"
-                r"artificial intelligence (consultant|architect|"
-                r"strategy|advisor)|"
-                r"(consultant|architect|berater)\s+(fuer\s+)?"
-                r"(ai|ki|artificial intelligence)\b")
+R_RA_SPECIALIST = _RA
 
+R_CLINICAL = (r"clinical affairs|clinical evaluation|klinische bewertung|"
+              r"klinische pruefung|clinical investigation|"
+              r"post[\s\-]?market|\bpms\b|marktueberwachung|"
+              r"vigilan[cz]|medical writer|clinical (study|project) "
+              r"manager|clinical research|\bcra\b|clinical scientist")
 
-R_AI_ENGINEER = (r"\bai\s*[\-/]?\s*(engineer|developer|entwickler|"
-                 r"specialist|spezialist|expert)|"
-                 r"\bki\s*[\-/]?\s*(engineer|developer|entwickler|"
-                 r"spezialist|experte)|"
-                 r"artificial intelligence engineer|"
-                 r"\bai software engineer\b")
+# Generic quality titles, counted only with a medical-device signal.
+R_QUALITY = (r"quality|qualitaet|\bqm\b|\bqmb\b|\bqs\b|\bqa\b|\bcapa\b|"
+             r"auditor|compliance|validier|validation|verification|"
+             r"verifizier")
 
-# --- Software engineering -----------------------------------------
-# Checked after the data and named AI families, so "Data Platform
-# Engineer" stays data and "AI Software Engineer" stays AI, but before
-# the vague AI bucket, so "Fullstack Developer (AI Startup)" is counted
-# as the fullstack role it names.
+# --- digital health --------------------------------------------------
 
-# Not in scope: embedded/firmware and QA/test. Caught here so they
-# don't fall into the generic software family; they land in
-# silver.excluded like every other out-of-scope row.
-R_SWE_OUT = (r"\bembedded\b|firmware|\bsps\b|\bplc\b|"
-             r"\b(qa|test|testing)[\s\-]?(engineer|automation)|"
-             r"quality assurance|testautomat|software[\s\-]?test|"
-             r"softwaretest")
+R_HEALTH_IT = (r"\bhl7\b|\bfhir\b|\bdicom\b|\bihe\b|interoperab|"
+               r"medizininformati|medical informati|health informati|"
+               r"\bkis\b|krankenhausinformation|\bpacs\b|\bris\b|"
+               r"telematik|health it|healthcare it|gesundheits[\s\-]?it|"
+               r"klinik[\s\-]?it|it[\s\-]im[\s\-]gesundheitswesen")
 
-R_FULLSTACK = r"full[\s\-]?stack"
+R_PRODUCT = (r"product (manager|owner|lead|management)|produktmanag|"
+             r"product marketing|portfolio manag|produktverantwort")
 
-R_MOBILE = (r"\b(ios|android|mobile|flutter|react native|swift|kotlin)"
-            r"\b[\s\-/]*(app[\s\-]?)?(software[\s\-]?)?"
-            r"(engineer|developer|entwickler|programmierer)|"
-            r"\bapp[\s\-]?entwickl|\bmobile app")
+R_ENGINEER_SW = (r"software|developer|entwickler|programmier|"
+                 r"engineer|ingenieur|data scien|machine learning|"
+                 r"\bml\b|\bai\b|\bki\b|architect|architekt|devops|"
+                 r"full[\s\-]?stack|backend|frontend|mobile|\bapp\b")
 
-R_FRONTEND = (r"front[\s\-]?end|"
-              r"\b(react|angular|vue(\.?js)?|javascript|typescript|ui)"
-              r"\b[\s\-/]*(engineer|developer|entwickler)|"
-              r"\bweb[\s\-]?(developer|entwickler)|webentwickl")
+R_SOFTWARE = (r"software|developer|programmier|softwareentwickl|"
+              r"full[\s\-]?stack|backend|frontend|\bapp[\s\-]entwickl|"
+              r"\bit[\s\-]")
 
-R_BACKEND = (r"back[\s\-]?end|"
-             r"(\bjava|\bgolang|\bgo(?=\s)|\bpython|\bphp|\bruby|\bscala|"
-             r"\bkotlin|\brust|\bnode\.?js|\.net|\bc#)"
-             r"\s*[\-/]?\s*(software[\s\-]?)?"
-             r"(engineer|developer|entwickler|programmierer)|"
-             # "Anwendungsentwickler Java": German puts the stack last
-             r"(engineer|developer|entwickler|programmierer)\s*[\-/(]?\s*"
-             r"(java|golang|python|php|ruby|scala|rust|node\.?js|"
-             r"\.net|c#)(\b|$)")
+R_CONSULT = (r"consult|berater|manager|strateg|business|referent|"
+             r"projekt|project|specialist|spezialist|expert|analyst|"
+             r"koordinat|coordinat|lead|leiter|head")
 
-R_DEVOPS = (r"devops|dev[\s\-]ops|devsecops|\bsre\b|site reliability|"
-            r"\bplatt?form[\s\-]?engineer|"
-            r"cloud[\s\-]?(solutions?[\s\-]?)?(engineer|architect|architekt|developer|"
-            r"entwickler|administrator|ingenieur|consultant|"
-            r"infrastructure)|"
-            r"kubernetes|infrastructure engineer|"
-            r"infrastructure as code")
+# --- medtech ---------------------------------------------------------
 
-R_SWE = (r"software[\s\-]?(engineer|developer|entwickler|ingenieur|"
-         r"architekt|architect|craftsman)|"
-         r"softwareentwickl|softwareingenieur|softwarearchitekt|"
-         r"\bprogrammierer|anwendungsentwickl|applikationsentwickl|"
-         r"\bsoftware dev")
+R_SALES = (r"sales|vertrieb|account manag|key account|aussendienst|"
+           r"gebietsleit|area manager|territory|"
+           r"business develop|medizinprodukteberater|"
+           r"application specialist|applikationsspezialist|"
+           r"clinical specialist|produktspezialist|product specialist")
 
-# Last resort. Mentions AI, tells you nothing else. Published as its
-# own family so the reader can see how large it is.
-R_AI_OTHER = (r"\bai\b|\bki\b|artificial intelligence|"
-              r"kuenstliche intelligenz")
+R_SERVICE = (r"service|techniker|technician|instandhalt|wartung|"
+             r"field|medizintechniker|biomedizintechniker|"
+             r"elektroniker|mechatroniker|inbetriebnahme|"
+             r"kundendienst|support")
+
+R_PRODUCTION = (r"produktion|production|fertigung|manufactur|"
+                r"prozessingenieur|process engineer|operator|"
+                r"montage|assembly|supply chain|logistik|einkauf|"
+                r"procurement|sterilis")
+
+R_RND = (r"engineer|ingenieur|entwickl|develop|konstrukt|design|"
+         r"physiker|physicist|wissenschaftl|scientist|r&d|f&e|"
+         r"forschung|research|systems|hardware|mechani|elektrotech|"
+         r"biomedical|biomedizin|medizintechnik|projektleit|"
+         r"project (manager|lead)")
 
 
-_ORDER = [
-    ("invalid", INVALID), ("entry programme", ENTRY),
-    ("data centre", DATACENTRE), ("finance", FINANCE),
-    ("data architect", R_ARCHITECT),
-    ("analytics engineer", R_ANALYTICS_ENG),
-    ("data engineer", R_ENGINEER), ("dwh / etl", R_DWH),
-    ("data governance", R_GOVERNANCE),
-    ("data scientist", R_SCIENTIST), ("data analyst", R_ANALYST),
-    ("data consultant", R_CONSULTANT), ("bi developer", R_BI),
-    ("ai research", R_AI_RESEARCH), ("genai / llm", R_GENAI),
-    ("mlops", R_MLOPS), ("ml engineer", R_ML),
-    ("ai consultant", R_AI_CONSULT), ("ai engineer", R_AI_ENGINEER),
-    ("embedded / qa", R_SWE_OUT),
-    ("fullstack engineer", R_FULLSTACK), ("mobile engineer", R_MOBILE),
-    ("frontend engineer", R_FRONTEND), ("backend engineer", R_BACKEND),
-    ("devops / cloud", R_DEVOPS), ("software engineer", R_SWE),
-    ("ai (other)", R_AI_OTHER),
-]
+_SENIOR = _re.compile(r"\b(senior|sr\.?|lead|principal|head|director|"
+                      r"staff|chief|\bvp\b|leiter|leitung)\b")
+_JUNIOR = _re.compile(r"\b(junior|jr\.?|entry|graduate|absolvent|"
+                      r"einsteiger|associate)\b")
 
 
 def _fold(s):
-    s = s.lower().strip()
+    s = (s or "").lower().strip()
     for a, b_ in [("ä", "ae"), ("ö", "oe"), ("ü", "ue"), ("ß", "ss")]:
         s = s.replace(a, b_)
     return s
 
 
-def classify(title):
-    """Mirror of the F.when() chain in notebooks/03_silver_clean.py.
-    If you edit one, edit both."""
+def _has(rx, s):
+    return bool(_re.search(rx, s))
+
+
+def classify(title, description=""):
+    """Title first; the description only decides whether an otherwise
+    generic title belongs to the medical-device or digital-health
+    industry."""
     n = _fold(title)
-    for fam, rx in _ORDER:
-        if _re.search(rx, n):
-            return fam
+    d = _fold(description)
+
+    if _has(INVALID, n):
+        return "invalid"
+    if _has(ENTRY, n):
+        return "entry programme"
+    if _has(CLINICAL_STAFF, n):
+        return "clinical staff"
+    # Out of scope by choice: senior, lead and head-of roles.
+    if _SENIOR.search(n):
+        return "senior level"
+
+    # regulatory: the title names it, no context needed
+    if _has(R_QARA, n):
+        return "qa / ra"
+    if _has(R_RA_MANAGER, n):
+        return "ra manager"
+    if _has(R_RA_SPECIALIST, n):
+        return "ra specialist"
+    if _has(R_CLINICAL, n):
+        return "clinical affairs"
+
+    med_t, dh_t = _has(MED_CTX, n), _has(DH_CTX, n)
+    med_d, dh_d = _has(MED_CTX, d), _has(DH_CTX, d)
+    med = med_t or med_d
+    # a digital-health title wins; a digital-health description only
+    # when the title does not already say medical device
+    dh = dh_t or (dh_d and not med_t)
+
+    if med and _has(R_QUALITY, n):
+        return "quality management"
+
+    # digital health
+    if _has(R_HEALTH_IT, n):
+        return "health it"
+    if dh:
+        if _has(R_PRODUCT, n):
+            return "digital health product"
+        if _has(R_ENGINEER_SW, n):
+            return "digital health engineer"
+        if _has(R_CONSULT, n) or dh_t:
+            return "digital health consulting"
+
+    # medtech
+    if med:
+        if _has(R_PRODUCT, n):
+            return "medtech product"
+        if _has(R_SALES, n):
+            return "medtech sales"
+        if _has(R_SOFTWARE, n):
+            return "medtech software"
+        if _has(R_SERVICE, n):
+            return "medtech service"
+        if _has(R_PRODUCTION, n):
+            return "medtech production"
+        if _has(R_RND, n):
+            return "medtech r&d"
     return "other"
 
 
-ROLE_GROUP = {}
-DATA_FAMILIES = ["data engineer", "data analyst", "data scientist",
-                 "data architect", "analytics engineer", "dwh / etl",
-                 "data governance", "data consultant", "bi developer"]
-AI_FAMILIES = ["ai engineer", "genai / llm", "ml engineer", "mlops",
-               "ai consultant", "ai research"]
-SWE_FAMILIES = ["software engineer", "backend engineer",
-                "frontend engineer", "fullstack engineer",
-                "mobile engineer", "devops / cloud"]
-for _f in DATA_FAMILIES:
-    ROLE_GROUP[_f] = "data"
-for _f in AI_FAMILIES:
-    ROLE_GROUP[_f] = "ai"
-for _f in SWE_FAMILIES:
-    ROLE_GROUP[_f] = "software"
+REGULATORY_FAMILIES = ["ra manager", "ra specialist", "qa / ra",
+                       "clinical affairs", "quality management"]
+MEDTECH_FAMILIES = ["medtech r&d", "medtech software", "medtech product",
+                    "medtech sales", "medtech service",
+                    "medtech production"]
+DH_FAMILIES = ["digital health engineer", "digital health product",
+               "health it", "digital health consulting"]
 
-# Published families. "ai (other)", "embedded / qa" and the hard
-# excludes are classified but never published.
-KEEP = set(DATA_FAMILIES + AI_FAMILIES + SWE_FAMILIES)
+ROLE_GROUP = {}
+for _f in REGULATORY_FAMILIES:
+    ROLE_GROUP[_f] = "regulatory"
+for _f in MEDTECH_FAMILIES:
+    ROLE_GROUP[_f] = "medtech"
+for _f in DH_FAMILIES:
+    ROLE_GROUP[_f] = "digital health"
+
+# Published families. Everything else lands in the excluded count.
+KEEP = set(REGULATORY_FAMILIES + MEDTECH_FAMILIES + DH_FAMILIES)
 
 
 def role_group(family):
     return ROLE_GROUP.get(family, "excluded")
-
-
-_SENIOR = _re.compile(r"\b(senior|sr\.?|lead|principal|head|director|"
-                      r"staff|chief|\bvp\b)\b")
-_JUNIOR = _re.compile(r"\b(junior|jr\.?|entry|graduate|absolvent|"
-                      r"einsteiger|associate)\b")
 
 
 def seniority(title):
@@ -242,7 +253,7 @@ def seniority(title):
     return "mid"
 
 
-# case-sensitive on purpose, like the Spark rlike it mirrors
+# case-sensitive on purpose
 _GERMAN = _re.compile(r"\b(und|der|die|das|mit|für|Kenntnisse|Erfahrung|"
                       r"Wir suchen|Deine|Ihre)\b")
 
@@ -263,7 +274,7 @@ CITY_STATES = {"berlin", "hamburg", "bremen", "wien",
 
 
 def city(area):
-    """Adzuna location.area -> normalised city, as in notebook 03."""
+    """Adzuna location.area -> normalised city."""
     area = area or []
     a2 = _fold(area[1]) if len(area) > 1 and area[1] else None
     a3 = _fold(area[2]) if len(area) > 2 and area[2] else None

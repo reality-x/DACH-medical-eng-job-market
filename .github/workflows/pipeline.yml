@@ -1,28 +1,30 @@
 name: pipeline
 
-# Rebuilds docs/data/*.json from two sources:
-#   - AI and data postings: the upstream tracker's published postings.json
-#     (Chrisinho8/DACH-data-job-market). Free, no Adzuna calls.
-#   - Software engineering postings: our own Adzuna queries, stored in
-#     state/swe_postings.json.
+# Rebuilds docs/data/*.json for the Regulatory Affairs / MedTech /
+# Digital Health tracker from our own Adzuna queries.
 #
-# Daily schedule: CALL_BUDGET=0, so it merges fresh upstream data with
-#   the stored SWE snapshot and never touches the Adzuna API.
-# Manual run (Actions -> pipeline -> Run workflow): default budget 25
-#   refreshes the SWE snapshot. 25 is the whole free-tier month.
+# The fetched postings are stored in state/postings_snapshot.json.
+#   - Manual run (Actions -> pipeline -> Run workflow): default budget 25
+#     calls refreshes the snapshot (7 queries x 2 countries = 14 calls
+#     for page 1, the rest goes to page 2).
+#   - Daily schedule: budget comes from the repo variable
+#     DAILY_CALL_BUDGET (default 0 = rebuild from the stored snapshot,
+#     ages moved forward, no API use). Set it to e.g. 25 if your Adzuna
+#     plan allows a daily refresh.
 #
-# Secrets (only needed for manual runs with a budget):
+# Secrets (needed whenever the budget is > 0):
 #   ADZUNA_APP_ID, ADZUNA_APP_KEY
-# Optional variable:
+# Optional variables:
 #   CALL_PACE  seconds between calls (default 13, fits 5 calls/minute)
+#   COUNTRIES  comma list (default de,ch; Austria left out)
 
 on:
   schedule:
-    - cron: "0 6 * * *"        # 06:00 UTC, after upstream publishes
+    - cron: "0 6 * * *"        # 06:00 UTC
   workflow_dispatch:
     inputs:
       call_budget:
-        description: "Max Adzuna API calls (0 = merge only, no API use)"
+        description: "Max Adzuna API calls (0 = rebuild from snapshot, no API use)"
         default: "25"
 
 permissions:
@@ -52,8 +54,9 @@ jobs:
         env:
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
-          CALL_BUDGET: ${{ github.event_name == 'schedule' && '0' || inputs.call_budget }}
+          CALL_BUDGET: ${{ github.event_name == 'schedule' && (vars.DAILY_CALL_BUDGET || '0') || inputs.call_budget }}
           CALL_PACE: ${{ vars.CALL_PACE || '13' }}
+          COUNTRIES: ${{ vars.COUNTRIES || 'de,ch' }}
         run: python src/pipeline.py
 
       - name: Keep raw API responses for a week

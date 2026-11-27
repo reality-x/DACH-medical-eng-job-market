@@ -1,20 +1,20 @@
-"""Pipeline for GitHub Actions: merge upstream AI/data + own SWE postings.
+"""Pipeline for GitHub Actions: Regulatory Affairs, MedTech and Digital
+Health postings in the DACH region.
 
-AI and data postings come from the upstream tracker's published
-postings.json (Chrisinho8/DACH-data-job-market, MIT), which refreshes
-daily and costs no Adzuna calls. Software engineering postings come from
-our own Adzuna queries, stored in state/swe_postings.json and refreshed
-only when a run has a call budget. Every aggregate is rebuilt from the
-merged rows, in the same JSON shapes the site reads.
+Postings come from our own Adzuna queries and are stored in
+state/postings_snapshot.json. A run with a call budget refreshes that
+snapshot; a run without one reuses it and moves every age forward to
+today. Every aggregate is rebuilt from the rows, in the JSON shapes the
+site reads.
 
-    CALL_BUDGET=0  python src/pipeline.py   # merge only, no API calls
-    CALL_BUDGET=25 python src/pipeline.py   # also refresh SWE postings
-    python src/pipeline.py --raw-dir DIR    # replay cached SWE responses
+    CALL_BUDGET=0  python src/pipeline.py   # rebuild from the snapshot
+    CALL_BUDGET=25 python src/pipeline.py   # refresh from Adzuna first
+    python src/pipeline.py --raw-dir DIR    # replay cached responses
 
 Environment:
     ADZUNA_APP_ID, ADZUNA_APP_KEY   needed only when CALL_BUDGET > 0
     CALL_BUDGET                     hard cap on API calls (default 25)
-    UPSTREAM_DATA                   base URL of the upstream docs/data
+    COUNTRIES                       comma list (default de,ch)
     CALL_PACE                       seconds between calls (default 13)
 """
 
@@ -45,21 +45,16 @@ STATE = ROOT / "state"
 
 BASE = "https://api.adzuna.com/v1/api/jobs"
 
-# Austria was dropped to fit the API quota; upstream AT rows are
-# dropped too, so every country carries every role group.
-COUNTRIES = ["de", "ch"]
+COUNTRIES = [c.strip() for c in
+             os.environ.get("COUNTRIES", "de,ch").split(",") if c.strip()]
 
-UPSTREAM = os.environ.get(
-    "UPSTREAM_DATA",
-    "https://raw.githubusercontent.com/Chrisinho8/DACH-data-job-market/"
-    "main/docs/data")
-
-# Only software engineering is queried; AI and data come from upstream.
-# 9 queries x 2 countries = 18 calls for page 1 of everything.
+# Adzuna's "what" is a full-text search, so these are deliberately broad;
+# classify.py decides what is in scope from the title (and, for medtech
+# and digital health, the description). 7 queries x 2 countries = 14
+# calls for page 1 of everything.
 ROLES = [
-    "software engineer", "softwareentwickler", "backend developer",
-    "frontend developer", "fullstack developer", "mobile developer",
-    "devops engineer", "cloud engineer", "site reliability engineer",
+    "regulatory affairs", "medical device", "medizintechnik",
+    "medizinprodukte", "clinical affairs", "digital health", "ehealth",
 ]
 
 PER_PAGE = 50
@@ -70,7 +65,7 @@ MAX_AGE_DAYS = 365
 PACE = float(os.environ.get("CALL_PACE", 13))
 RETRIES = 6
 STALE_MIN_POSTINGS = 5
-FAMILY_MIN = 50        # skill tables skip thinner families
+FAMILY_MIN = 20        # skill tables skip thinner families
 SKILL_MIN = 3
 
 ISO = "%Y-%m-%dT00:00:00.000"
@@ -233,7 +228,7 @@ def parse(x, today):
 
     key = "|".join([title.lower(), (company or "").lower(), city,
                     desc.lower()[:200]])
-    family = C.classify(title)
+    family = C.classify(title, desc)
     return {
         "posting_id": hashlib.sha256(key.encode()).hexdigest(),
         "title": title,
@@ -379,8 +374,7 @@ def gold(P, today):
             "pct_over_60d": pct(rows, lambda r: r["age_days"] > 60),
             "pct_over_90d": pct(rows, lambda r: r["age_days"] > 90),
             "pct_english": pct(rows, lambda r: r["language"] == "en"),
-            # only over rows fetched from Adzuna; upstream rows carry no
-            # salary field, which is unknown rather than absent
+            # only over rows whose salary field is known
             "pct_with_salary": pct(
                 [r for r in rows if r.get("salary_known", True)],
                 lambda r: r["salary_min"] is not None),
@@ -427,13 +421,14 @@ def gold(P, today):
     out["skill_by_role"] = sorted(
         sbr, key=lambda x: (x["role_family"], -x["n_postings"]))
 
-    AI = [r for r in P if r["role_group"] == "ai"]
+    # The regulatory group gets the per-family spotlight.
+    RA = [r for r in P if r["role_group"] == "regulatory"]
     ab = []
-    for (f,), rows in group(AI, "role_family").items():
+    for (f,), rows in group(RA, "role_family").items():
         a = [r["age_days"] for r in rows]
         ab.append({
             "role_family": f, "n_postings": len(rows),
-            "pct_of_ai": r1(100 * len(rows) / len(AI)),
+            "pct_of_ra": r1(100 * len(rows) / len(RA)),
             "pct_of_market": r1(100 * len(rows) / n_all),
             "employers": len({r["company"] for r in rows}),
             "avg_age_days": avg(a), "median_age_days": median(a),
@@ -442,21 +437,21 @@ def gold(P, today):
             "pct_english": pct(rows, lambda r: r["language"] == "en"),
             "pct_agency": pct(rows, lambda r: r["is_agency"]),
             "snapshot_date": T})
-    out["ai_breakdown"] = sorted(ab, key=lambda x: -x["n_postings"])[:20]
+    out["ra_breakdown"] = sorted(ab, key=lambda x: -x["n_postings"])[:20]
 
-    # as in 05: the family size counts AI postings with at least one skill
-    ai_ps = [r for r in PS if r["role_group"] == "ai"]
-    ai_fam = {f: len({r["posting_id"] for r in rows})
-              for (f,), rows in group(ai_ps, "role_family").items()}
+    # family size counts regulatory postings with at least one skill
+    ra_ps = [r for r in PS if r["role_group"] == "regulatory"]
+    ra_fam = {f: len({r["posting_id"] for r in rows})
+              for (f,), rows in group(ra_ps, "role_family").items()}
     asf = []
-    for (f, s), rows in group(ai_ps, "role_family", "skill").items():
-        if ai_fam[f] >= FAMILY_MIN and len(rows) >= SKILL_MIN:
+    for (f, s), rows in group(ra_ps, "role_family", "skill").items():
+        if ra_fam[f] >= FAMILY_MIN and len(rows) >= SKILL_MIN:
             asf.append({"role_family": f, "skill": s,
                         "skill_category": CATEGORY.get(s, "other"),
                         "n_postings": len(rows),
-                        "pct_of_family": r1(100 * len(rows) / ai_fam[f]),
+                        "pct_of_family": r1(100 * len(rows) / ra_fam[f]),
                         "snapshot_date": T})
-    out["ai_skill_by_family"] = sorted(
+    out["ra_skill_by_family"] = sorted(
         asf, key=lambda x: (x["role_family"], -x["n_postings"]))
 
     pub = [r for r in P if r["url"]]
@@ -489,10 +484,10 @@ def history(old, g, P, today):
     for (f,), rs in sorted(group(P, "role_family").items()):
         add("role_count", f, len(rs))
         add("role_avg_age_days", f, avg(r["age_days"] for r in rs))
-    for a in g["ai_breakdown"]:
-        add("ai_family_pct", a["role_family"], a["pct_of_ai"])
-    add("ai_share_of_market", "all",
-        r1(sum(a["pct_of_market"] for a in g["ai_breakdown"])))
+    for a in g["ra_breakdown"]:
+        add("ra_family_pct", a["role_family"], a["pct_of_ra"])
+    add("ra_share_of_market", "all",
+        r1(sum(a["pct_of_market"] for a in g["ra_breakdown"])))
     return rows
 
 
@@ -506,7 +501,7 @@ REG_FIELDS = ["posting_id", "created_date", "country", "role_family",
 
 def update_registry(P, today):
     """Insert-only list of every posting ever seen. new_postings_daily is
-    rebuilt from it, plus the frozen Databricks-era counts in the seed."""
+    rebuilt from it (plus an optional frozen seed of older counts)."""
     STATE.mkdir(exist_ok=True)
     reg_path = STATE / "registry.tsv"
     seen = set()
@@ -550,12 +545,6 @@ def write(name, obj, compact=False):
     print(f"  wrote {name}.json ({len(body) / 1024:.1f} KB)")
 
 
-def fetch_json(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "dach-jobs-pipeline"})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return json.loads(r.read().decode())
-
-
 def from_public(r, today):
     """A published postings.json row -> the internal record gold() uses."""
     cd = dt.date.fromisoformat(r["created_date"][:10])
@@ -581,22 +570,10 @@ def to_public(r):
         "created_date": iso(r["created_date"])}
 
 
-def upstream_rows(today):
-    rows = fetch_json(f"{UPSTREAM}/postings.json")
-    meta = fetch_json(f"{UPSTREAM}/meta.json")
-    keep = [from_public(r, today) for r in rows
-            if r["country"] in COUNTRIES
-            and r["role_group"] in ("data", "ai")
-            and r.get("url")]
-    print(f"upstream: {len(keep):,} AI/data postings "
-          f"(of {len(rows):,}, published {meta.get('updated')})")
-    return keep, meta.get("updated")
-
-
-def swe_rows(args, today):
-    """Fresh SWE postings when there is a call budget, else the last
-    stored snapshot with ages moved forward to today."""
-    path = STATE / "swe_postings.json"
+def snapshot_rows(args, today):
+    """Fresh postings when there is a call budget, else the last stored
+    snapshot with ages moved forward to today."""
+    path = STATE / "postings_snapshot.json"
     budget = int(os.environ.get("CALL_BUDGET", 25))
     calls, n_quar, fetched = 0, 0, None
 
@@ -613,49 +590,45 @@ def swe_rows(args, today):
                         args.cache_dir / today.isoformat())
             raw = fetch_all(f)
             calls = f.calls
-        clean, n_quar = silver(raw, today)
-        swe = [r for r in clean if r["role_group"] == "software"]
-        assert len(swe) >= args.min_swe, \
-            f"only {len(swe)} SWE postings, keeping the previous snapshot"
+        rows, n_quar = silver(raw, today)
+        assert len(rows) >= args.min_postings, \
+            f"only {len(rows)} postings, keeping the previous snapshot"
         STATE.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps({
             "fetched": today.isoformat(), "api_calls": calls,
             "quarantined": n_quar,
-            "postings": [to_public(r) for r in swe]},
+            "postings": [to_public(r) for r in rows]},
             ensure_ascii=False, separators=(",", ":")))
         fetched = today.isoformat()
-        print(f"SWE snapshot refreshed: {len(swe):,} postings")
+        print(f"snapshot refreshed: {len(rows):,} postings")
     elif path.exists():
         snap = json.loads(path.read_text())
-        swe = []
+        rows = []
         for r in snap["postings"]:
             x = from_public(r, today)
             x.update(salary_known=True,
                      salary_min=r.get("salary_min"),
                      salary_max=r.get("salary_max"),
                      desc_truncated=r.get("desc_truncated"))
-            swe.append(x)
-        swe = [r for r in swe if r["age_days"] <= MAX_AGE_DAYS]
+            rows.append(x)
+        rows = [r for r in rows if r["age_days"] <= MAX_AGE_DAYS]
         fetched, n_quar = snap["fetched"], snap.get("quarantined", 0)
-        print(f"SWE snapshot reused from {fetched}: {len(swe):,} postings")
+        print(f"snapshot reused from {fetched}: {len(rows):,} postings")
     else:
-        swe = []
-        print("no SWE snapshot yet; run with CALL_BUDGET > 0 to create one")
-    return swe, fetched, calls, n_quar
+        sys.exit("no snapshot yet; run with CALL_BUDGET > 0 to create one")
+    return rows, fetched, calls, n_quar
 
 
 def main():
     global OUT, STATE
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw-dir", type=pathlib.Path,
-                    help="replay cached SWE API responses instead of calling")
+                    help="replay cached API responses instead of calling")
     ap.add_argument("--cache-dir", type=pathlib.Path,
                     default=ROOT / ".cache" / "raw",
                     help="where live responses are saved")
     ap.add_argument("--min-postings", type=int,
-                    default=int(os.environ.get("MIN_POSTINGS", 500)))
-    ap.add_argument("--min-swe", type=int,
-                    default=int(os.environ.get("MIN_SWE", 100)))
+                    default=int(os.environ.get("MIN_POSTINGS", 150)))
     ap.add_argument("--out-dir", type=pathlib.Path, default=OUT)
     ap.add_argument("--state-dir", type=pathlib.Path, default=STATE)
     ap.add_argument("--today", type=dt.date.fromisoformat,
@@ -664,18 +637,15 @@ def main():
     today = args.today
     OUT, STATE = args.out_dir, args.state_dir
 
-    up, up_date = upstream_rows(today)
-    swe, swe_date, calls, n_quar = swe_rows(args, today)
-
-    merged = {}
-    for r in up + swe:
-        merged.setdefault(r["posting_id"], r)
-    P = [r for r in merged.values() if 0 <= r["age_days"] <= MAX_AGE_DAYS]
+    rows, fetched, calls, n_quar = snapshot_rows(args, today)
+    # A reused snapshot is not reclassified, so the scope rules are
+    # applied again here: in-scope families only, no senior titles.
+    P = [r for r in rows if 0 <= r["age_days"] <= MAX_AGE_DAYS
+         and r["role_family"] in C.KEEP and r["seniority"] != "senior"]
 
     # validation gate: never overwrite the site with a broken run
     n = len(P)
     assert n >= args.min_postings, f"only {n} postings, refusing to publish"
-    assert not {r["role_family"] for r in P} & {"ai (other)", "embedded / qa"}
     assert all(r["role_family"] in C.KEEP for r in P)
 
     g = gold(P, today)
@@ -700,16 +670,14 @@ def main():
         "median_age_days": float(ms["median_age_days"]),
         "pct_over_60d": ms["pct_over_60d"],
         "quarantined": n_quar,
-        "quarantine_rate": round(n_quar / max(len(swe) + n_quar, 1), 4),
+        "quarantine_rate": round(n_quar / max(len(rows) + n_quar, 1), 4),
         "postings_published": len(g["postings"]),
-        "matcher_precision": None,
-        "matcher_recall": None,
         "desc_truncated_pct": r1(100 * sum(trunc) / len(trunc)) if trunc else None,
         "api_calls": calls,
-        "countries": COUNTRIES,
-        "upstream_updated": up_date,
-        "swe_updated": swe_date,
-        "swe_postings": len(swe),
+        "countries": sorted({r["country"] for r in P}),
+        "snapshot_updated": fetched,
+        "role_groups": {grp: sum(1 for r in P if r["role_group"] == grp)
+                        for grp in ("regulatory", "medtech", "digital health")},
     })
 
 

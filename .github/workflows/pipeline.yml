@@ -5,7 +5,7 @@ name: pipeline
 #
 # The fetched postings are stored in state/postings_snapshot.json.
 #   - Manual run (Actions -> pipeline -> Run workflow): default budget 25
-#     calls refreshes the snapshot (7 queries x 2 countries = 14 calls
+#     calls refreshes the snapshot (8 searches x 2 countries = 16 calls
 #     for page 1, the rest goes to page 2).
 #   - Daily schedule: budget comes from the repo variable
 #     DAILY_CALL_BUDGET (default 0 = rebuild from the stored snapshot,
@@ -17,6 +17,7 @@ name: pipeline
 # Optional variables:
 #   CALL_PACE  seconds between calls (default 13, fits 5 calls/minute)
 #   COUNTRIES  comma list (default de,ch; Austria left out)
+#   MAX_DAYS_OLD  only fetch postings this new (default 14)
 
 on:
   schedule:
@@ -57,6 +58,7 @@ jobs:
           CALL_BUDGET: ${{ github.event_name == 'schedule' && (vars.DAILY_CALL_BUDGET || '0') || inputs.call_budget }}
           CALL_PACE: ${{ vars.CALL_PACE || '13' }}
           COUNTRIES: ${{ vars.COUNTRIES || 'de,ch' }}
+          MAX_DAYS_OLD: ${{ vars.MAX_DAYS_OLD || '14' }}
         run: python src/pipeline.py
 
       - name: Keep raw API responses for a week

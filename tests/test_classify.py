@@ -29,6 +29,8 @@ CASES = [
     # quality needs a medical-device signal
     ("Qualitätsmanager (m/w/d)",                       MED,  "quality management"),
     ("Quality Engineer Medical Devices",               NONE, "quality management"),
+    ("Qualitätsmanagementbeauftragter (QMB)",          MED,  "quality management"),
+    ("Mitarbeiter Qualitätsmanagement",                MED,  "quality management"),
     ("Qualitätsmanager (m/w/d)",                       NONE, "other"),
     # medtech
     ("Entwicklungsingenieur Medizintechnik",           NONE, "medtech r&d"),

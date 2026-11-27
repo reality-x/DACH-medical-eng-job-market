@@ -35,9 +35,11 @@ How a title is classified (`src/classify.py`):
 ## Architecture
 
 ```
-Adzuna API              de · ch, 7 broad queries
-    │                   (regulatory affairs, medical device, medizintechnik,
-    │                    medizinprodukte, clinical affairs, digital health, ehealth)
+Adzuna API              de · ch, 8 searches, newest first, last 14 days
+    │                   regulatory affairs · medical device · medizintechnik ·
+    │                   medizinprodukte · qualitätsmanagement + medizinprodukte ·
+    │                   digital health · any of (ehealth diga telemedizin fhir hl7) ·
+    │                   any of (13485 14971 62304 ivdr prrc)
     ▼
 src/pipeline.py         parse → quality gate → dedupe → classify → skills
     │
@@ -59,7 +61,7 @@ GitHub Pages            static site (docs/), no backend
 | Actions → pipeline → Run workflow | 25 calls (default) | Fetches fresh postings from Adzuna and rebuilds everything |
 | Daily at 06:00 UTC | `DAILY_CALL_BUDGET` variable (default 0) | 0 = rebuilds from the stored snapshot with ages moved forward; set e.g. 25 if your Adzuna plan allows a daily refresh |
 
-Page 1 of every query in every country is 7 × 2 = 14 calls; the rest of the budget goes to page 2. The script waits 13 s between calls to stay under 5 calls/minute (`CALL_PACE` variable). Countries can be changed with the `COUNTRIES` variable (default `de,ch`).
+Page 1 of every search in every country is 8 × 2 = 16 calls; the rest of the budget goes to page 2. Results are sorted newest first and limited to postings from the last 14 days (`MAX_DAYS_OLD` variable), so the budget goes to fresh adverts. Because of that window, "days open" figures only reach about 14 days on the day of a fetch and grow on the days the stored snapshot is reused. The script waits 13 s between calls to stay under 5 calls/minute (`CALL_PACE` variable). Countries can be changed with the `COUNTRIES` variable (default `de,ch`).
 
 **Setup:** add `ADZUNA_APP_ID` and `ADZUNA_APP_KEY` (from developer.adzuna.com) under **Settings → Secrets and variables → Actions**, then run the workflow manually once. Enable GitHub Pages from the `docs/` folder.
 

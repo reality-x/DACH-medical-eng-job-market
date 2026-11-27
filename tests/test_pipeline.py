@@ -99,5 +99,9 @@ def test_public_roundtrip_keeps_fields_and_moves_age_forward():
     assert later["skills"] == clean[0]["skills"]
 
 
+def test_every_query_has_keywords():
+    assert all(set(q) & {"what", "what_or"} for q in PL.QUERIES.values())
+
+
 def test_page_one_of_every_query_fits_the_budget():
     assert len(PL.COUNTRIES) * len(PL.ROLES) <= 25

@@ -16,6 +16,7 @@ Environment:
     CALL_BUDGET                     hard cap on API calls (default 25)
     COUNTRIES                       comma list (default de,ch)
     CALL_PACE                       seconds between calls (default 13)
+    MAX_DAYS_OLD                    only fetch postings this new (default 14)
 """
 
 import argparse
@@ -48,14 +49,26 @@ BASE = "https://api.adzuna.com/v1/api/jobs"
 COUNTRIES = [c.strip() for c in
              os.environ.get("COUNTRIES", "de,ch").split(",") if c.strip()]
 
-# Adzuna's "what" is a full-text search, so these are deliberately broad;
-# classify.py decides what is in scope from the title (and, for medtech
-# and digital health, the description). 7 queries x 2 countries = 14
-# calls for page 1 of everything.
-ROLES = [
-    "regulatory affairs", "medical device", "medizintechnik",
-    "medizinprodukte", "clinical affairs", "digital health", "ehealth",
-]
+# Searches, as label -> Adzuna keyword parameters. "what" needs every
+# word; "what_or" needs any one of them, so several small searches share
+# one call. They are deliberately broad: classify.py decides what is in
+# scope. 8 searches x 2 countries = 16 calls for page 1 of everything.
+QUERIES = {
+    "regulatory affairs": {"what": "regulatory affairs"},
+    "medical device":     {"what": "medical device"},
+    "medizintechnik":     {"what": "medizintechnik"},
+    "medizinprodukte":    {"what": "medizinprodukte"},
+    "qualitaetsmanagement": {"what": "qualitätsmanagement medizinprodukte"},
+    "digital health":     {"what": "digital health"},
+    "health it terms":    {"what_or": "ehealth diga telemedizin fhir hl7"},
+    "ra standards":       {"what_or": "13485 14971 62304 ivdr prrc"},
+}
+ROLES = list(QUERIES)
+
+# Newest first, and only postings Adzuna first saw in the last N days,
+# so the call budget goes to fresh adverts rather than long-open ones.
+SORT_BY = "date"
+MAX_DAYS_OLD = int(os.environ.get("MAX_DAYS_OLD", 14))
 
 PER_PAGE = 50
 MAX_PAGES = 45
@@ -135,7 +148,8 @@ class Fetcher:
 
         qs = urllib.parse.urlencode({
             "app_id": self.app_id, "app_key": self.app_key,
-            "results_per_page": PER_PAGE, "what": role,
+            "results_per_page": PER_PAGE, **QUERIES[role],
+            "sort_by": SORT_BY, "max_days_old": MAX_DAYS_OLD,
             "content-type": "application/json"})
         url = f"{BASE}/{country}/search/{page}?{qs}"
 
